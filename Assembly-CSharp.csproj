@@ -226,6 +226,7 @@
     <Compile Include="Assets\Scripts\Grid\Terraform.cs" />
     <Compile Include="Assets\Scripts\Grid\TerrainMesh.cs" />
     <Compile Include="Assets\Scripts\InputController.cs" />
+    <Compile Include="Assets\Scripts\Utils.cs" />
     <None Include="Assets\3rd Party\SteamVR\Resources\SteamVR_Fade.shader" />
     <None Include="Assets\3rd Party\SteamVR\Resources\SteamVR_ClearAll.shader" />
     <None Include="Assets\3rd Party\SteamVR\InteractionSystem\Hints\Shaders\ControllerButtonHints.shader" />

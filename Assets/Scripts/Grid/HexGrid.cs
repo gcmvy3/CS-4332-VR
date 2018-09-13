@@ -36,7 +36,7 @@ public class HexGrid : MonoBehaviour {
             }
         }
 
-        terrainMesh.Generate(rows, columns, cellStacks);
+        GenerateTerrainMesh();
     }
 	
 	// Update is called once per frame
@@ -79,5 +79,56 @@ public class HexGrid : MonoBehaviour {
         }
 
         cellStacks[i] = cellStack;
+    }
+
+    public Stack<HexCell> GetCellStack(HexCoordinates coords) {
+        Vector2 offsetCoords = coords.ToOffsetCoordinates();
+
+        int index = (int)(offsetCoords.y * columns + offsetCoords.x);
+
+        return cellStacks[index];
+    }
+
+    public void AddCell(HexCell cell, HexCoordinates coords) {
+        Stack<HexCell> stack = GetCellStack(coords);
+
+        HexCell top = stack.Peek();
+
+        Vector3 newPosition = top.transform.position;
+        newPosition += HexMetrics.heightVector;
+        cell.transform.position = newPosition;
+
+        cell.transform.parent = GetComponentInParent<Transform>();
+
+        stack.Push(cell);
+
+        GenerateTerrainMesh();
+    }
+
+    public void GenerateTerrainMesh() {
+        terrainMesh.Generate(rows, columns, cellStacks);
+    }
+
+    public bool CanRemoveCell(HexCoordinates coordinates) {
+
+        Stack<HexCell> stack = GetCellStack(coordinates);
+
+        if(stack.Count > 0) {
+            HexCell top = stack.Peek();
+            if(!(top.GetType() == typeof(BedrockCell))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void RemoveCell(HexCoordinates coordinates) {
+        Stack<HexCell> stack = GetCellStack(coordinates);
+
+        HexCell removedCell = stack.Pop();
+        Destroy(removedCell.gameObject);
+        removedCell = null;
+
+        GenerateTerrainMesh();
     }
 }

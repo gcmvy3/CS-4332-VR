@@ -8,11 +8,13 @@ public class TerrainMesh : MonoBehaviour {
     Mesh terrainMesh;
     List<Vector3> vertices;
     List<int> triangles;
+    MeshCollider meshCollider;
 
 	// Use this for initialization
 	void Start () {
         GetComponent<MeshFilter>().mesh = terrainMesh = new Mesh();
         terrainMesh.name = "Terrain Mesh";
+        meshCollider = gameObject.AddComponent<MeshCollider>();
         vertices = new List<Vector3>();
         triangles = new List<int>();
 	}
@@ -34,10 +36,13 @@ public class TerrainMesh : MonoBehaviour {
         terrainMesh.vertices = vertices.ToArray();
         terrainMesh.triangles = triangles.ToArray();
         terrainMesh.RecalculateNormals();
+
+        meshCollider.sharedMesh = terrainMesh;
     }
 
     
-    public void GenerateMesh(Stack<HexCell> stack) {
+    void GenerateMesh(Stack<HexCell> stack) {
+
         HexCell topCell = stack.Peek();
 
         Vector3 center = topCell.transform.localPosition;
