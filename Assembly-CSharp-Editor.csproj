@@ -69,6 +69,15 @@
     <Compile Include="Assets\3rd Party\SteamVR\Editor\SteamVR_Settings.cs" />
     <Compile Include="Assets\3rd Party\SteamVR\Editor\SteamVR_SkyboxEditor.cs" />
     <Compile Include="Assets\3rd Party\SteamVR\Editor\SteamVR_Update.cs" />
+    <Compile Include="Assets\Oculus\VR\Editor\OVRBuild.cs" />
+    <Compile Include="Assets\Oculus\VR\Editor\OVREngineConfigurationUpdater.cs" />
+    <Compile Include="Assets\Oculus\VR\Editor\OVRLayerAttributeEditor.cs" />
+    <Compile Include="Assets\Oculus\VR\Editor\OVRManifestPreprocessor.cs" />
+    <Compile Include="Assets\Oculus\VR\Editor\OVRPluginUpdater.cs" />
+    <Compile Include="Assets\Oculus\VR\Editor\OVRPluginUpdaterStub.cs" />
+    <Compile Include="Assets\Oculus\VR\Editor\OVRScreenshotWizard.cs" />
+    <Compile Include="Assets\Oculus\VR\Scripts\Editor\OVRManagerEditor.cs" />
+    <None Include="Assets\Oculus\VR\Editor\AndroidManifest.OVRSubmission.xml" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>Z:/Users/Grant/Documents/CS 4332 VR/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
@@ -377,6 +386,22 @@
     <ProjectReference Include="Assembly-CSharp.csproj">
       <Project>{01B0E029-0EF7-ED73-F1E1-E7FF573B6AAE}</Project>
       <Name>Assembly-CSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="NavMeshComponentsExamplesEditor.csproj">
+      <Project>{EA9CFC50-8D4D-8500-1B43-B02E5268E41A}</Project>
+      <Name>NavMeshComponentsExamplesEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="NavMeshComponentsEditor.csproj">
+      <Project>{5544112A-C459-0C6F-C222-572F5F488055}</Project>
+      <Name>NavMeshComponentsEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="NavMeshComponents.csproj">
+      <Project>{56D5C6E6-4B19-026F-BFDD-5A7789BBC536}</Project>
+      <Name>NavMeshComponents</Name>
+    </ProjectReference>
+    <ProjectReference Include="NavMeshComponentsExamples.csproj">
+      <Project>{97DBBC33-87A4-337A-9436-B6C4EB7B233E}</Project>
+      <Name>NavMeshComponentsExamples</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
