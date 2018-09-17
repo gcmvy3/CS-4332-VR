@@ -1,0 +1,5 @@
+Library/EditorInstance.json
+*.log
+Temp/UnityLockfile
+*.bakert
+Library/shadercompiler-UnityShaderCompiler.exe0.log
