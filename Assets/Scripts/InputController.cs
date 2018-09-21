@@ -9,6 +9,8 @@ public class InputController : MonoBehaviour {
     private NVRHand secondaryHand;
     private NVRHand primaryHand;
 
+    private GameObject handMenu;
+
     public Color PointerColor;
     public float PointerWidth = 0.02f;
 
@@ -27,6 +29,9 @@ public class InputController : MonoBehaviour {
         player = GetComponent<NVRPlayer>();
         primaryHand = player.RightHand;
         secondaryHand = player.LeftHand;
+
+        handMenu = new GameObject("HandMenuPrefab");
+        handMenu.transform.SetParent(secondaryHand.transform);
 
         terraform = GameObject.FindObjectOfType<Terraform>();
 

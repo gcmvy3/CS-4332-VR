@@ -32,13 +32,14 @@ public class Terraform : MonoBehaviour {
 
         HexCell top = stack.Peek();
 
-        Vector3 ghostPosition = top.transform.position;
-        ghostPosition += HexMetrics.heightVector;
+        //Vector3 ghostPosition = top.transform.position;
+        //ghostPosition += HexMetrics.heightVector;
 
-        ghostCell.transform.position = ghostPosition;
+        //ghostCell.transform.position = ghostPosition;
     }
 
     public void SetCellType(HexCell cell) {
+        /*
         cellType = Instantiate<HexCell>(cell);
         ghostCell = Instantiate<HexCell>(cell);
 
@@ -55,6 +56,7 @@ public class Terraform : MonoBehaviour {
         }
 
         ghostCell.GetComponent<Renderer>().material = ghostMaterial;
+        */
     }
 
     public void PlaceCell(Vector3 position) {

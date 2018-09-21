@@ -4,11 +4,11 @@ using UnityEngine;
 
 public static class HexMetrics {
 
-    public const float outerRadius = 2f;
+    public const float outerRadius = 1.6f;
 
     public const float innerRadius = outerRadius * 0.866025404f;
 
-    public const float height = 1f;
+    public const float height = 0.8f;
 
     public static Vector3 heightVector = new Vector3(0, height, 0);
 

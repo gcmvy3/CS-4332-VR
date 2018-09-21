@@ -3,40 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(TerrainCollisionMesh), typeof(TerrainRenderMesh))]
 public class HexGrid : MonoBehaviour {
 
-    public int columns = 12;
-    public int rows = 24;
+    public static float terrainScale = 5.0f;
+    public int columns = 24;
+    public int rows = 48;
+    public int maxHeight = 6;
     public bool showCoordinates = true;
-
-    public HexCell hexCellPrefab;
-    public BedrockCell bedrockCellPrefab;
-    public DirtCell dirtCellPrefab;
 
     public Text cellLabelPrefab;
 
-    Stack<HexCell>[] cellStacks;
+    CellStack[] cellStacks;
 
     Canvas gridCanvas;
 
-    TerrainMesh terrainMesh;
+    TerrainCollisionMesh collisionMesh;
+    TerrainRenderMesh renderMesh;
 
     // Use this for initialization
     void Start () {
         gridCanvas = GetComponentInChildren<Canvas>();
-        terrainMesh = GetComponentInChildren<TerrainMesh>();
+        collisionMesh = GetComponent<TerrainCollisionMesh>();
+        renderMesh = GetComponent<TerrainRenderMesh>();
+        GenerateProceduralMap();
+    }
+
+    public void GenerateProceduralMap() {
 
         cellStacks = new Stack<HexCell>[rows * columns];
 
-        for (int z = 0, i = 0; z < rows; z++)
-        {
-            for (int x = 0; x < columns; x++)
-            {
-                CreateCellStack(x, z, i++);
+        float[,] heightMap = Utils.GenerateNoiseMap(rows, columns, terrainScale);
+
+        for (int z = 0, i = 0; z < rows; z++) {
+            for (int x = 0; x < columns; x++) {
+
+                int stackHeight = (int)(heightMap[x, z] * maxHeight);
+                CreateCellStack(x, z, stackHeight, i++);
             }
         }
 
-        GenerateTerrainMesh();
+        GenerateMeshes();
     }
 	
 	// Update is called once per frame
@@ -44,7 +51,7 @@ public class HexGrid : MonoBehaviour {
 		
 	}
 
-    void CreateCellStack(int x, int z, int i) {
+    void CreateCellStack(int x, int z, int height, int index) {
         Vector3 position;
         position.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
         position.y = 0f;
@@ -52,20 +59,28 @@ public class HexGrid : MonoBehaviour {
 
         Stack<HexCell> cellStack = new Stack<HexCell>();
 
-        BedrockCell bedrockCell = Instantiate<BedrockCell>(bedrockCellPrefab);
-        bedrockCell.transform.SetParent(transform, false);
-        bedrockCell.transform.localPosition = position;
+        BedrockCell bedrockCell = new BedrockCell(); ;
+        //bedrockCell.transform.SetParent(transform, false);
+        //bedrockCell.transform.localPosition = position;
         bedrockCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cellStack.Push(bedrockCell);
 
         position.y += HexMetrics.height;
 
-        if(i % 2 == 0) {
-            DirtCell dirtCell = Instantiate<DirtCell>(dirtCellPrefab);
-            dirtCell.transform.SetParent(transform, false);
-            dirtCell.transform.localPosition = position;
-            dirtCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-            cellStack.Push(dirtCell);
+        for(int i = 0; i < height; i++) {
+            HexCell newCell;
+
+            if(i == height - 1) {
+                newCell = new GrassCell();
+            }
+            else {
+                newCell = new DirtCell();
+            }
+            
+            //newCell.transform.SetParent(transform, false);
+            //newCell.transform.localPosition = position;
+            newCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+            cellStack.Push(newCell);
 
             position.y += HexMetrics.height;
         }
@@ -78,7 +93,7 @@ public class HexGrid : MonoBehaviour {
             label.text = bedrockCell.coordinates.ToStringOnSeparateLines();
         }
 
-        cellStacks[i] = cellStack;
+        cellStacks[index] = cellStack;
     }
 
     public Stack<HexCell> GetCellStack(HexCoordinates coords) {
@@ -86,7 +101,21 @@ public class HexGrid : MonoBehaviour {
 
         int index = (int)(offsetCoords.y * columns + offsetCoords.x);
 
-        return cellStacks[index];
+        if (index >= 0 && index < cellStacks.Length) {
+            return cellStacks[index];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public Stack<HexCell> GetCellStack(int index) {
+        if(index >= 0 && index < cellStacks.Length) {
+            return cellStacks[index];
+        }
+        else {
+            return null;
+        }
     }
 
     public void AddCell(HexCell cell, HexCoordinates coords) {
@@ -94,19 +123,21 @@ public class HexGrid : MonoBehaviour {
 
         HexCell top = stack.Peek();
 
+        /*
         Vector3 newPosition = top.transform.position;
         newPosition += HexMetrics.heightVector;
         cell.transform.position = newPosition;
 
         cell.transform.parent = GetComponentInParent<Transform>();
-
+        */
         stack.Push(cell);
 
-        GenerateTerrainMesh();
+        GenerateMeshes();
     }
 
-    public void GenerateTerrainMesh() {
-        terrainMesh.Generate(rows, columns, cellStacks);
+    public void GenerateMeshes() {
+        collisionMesh.Generate();
+        renderMesh.Generate();
     }
 
     public bool CanRemoveCell(HexCoordinates coordinates) {
@@ -126,9 +157,9 @@ public class HexGrid : MonoBehaviour {
         Stack<HexCell> stack = GetCellStack(coordinates);
 
         HexCell removedCell = stack.Pop();
-        Destroy(removedCell.gameObject);
+        //Destroy(removedCell.gameObject);
         removedCell = null;
 
-        GenerateTerrainMesh();
+        GenerateMeshes();
     }
 }

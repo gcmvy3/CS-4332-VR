@@ -100,11 +100,11 @@ NavMeshSettings:
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
-    agentSlope: 45
-    agentClimb: 0.4
-    ledgeDropHeight: 0
+    agentSlope: 60
+    agentClimb: 2
+    ledgeDropHeight: 1
     maxJumpAcrossDistance: 0
-    minRegionArea: 2
+    minRegionArea: 0.5
     manualCellSize: 0
     cellSize: 0.16666667
     manualTileSize: 0
@@ -179,7 +179,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1001 &1050391091
+--- !u!1001 &304861136
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -188,15 +188,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4862942631572498, guid: e996ec124c41124438084d47e6098692, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -27.7
+      value: -46.1
       objectReference: {fileID: 0}
     - target: {fileID: 4862942631572498, guid: e996ec124c41124438084d47e6098692, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -7.3
+      value: -23.1
       objectReference: {fileID: 0}
     - target: {fileID: 4862942631572498, guid: e996ec124c41124438084d47e6098692, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 5.4
       objectReference: {fileID: 0}
     - target: {fileID: 4862942631572498, guid: e996ec124c41124438084d47e6098692, type: 2}
       propertyPath: m_LocalRotation.x
@@ -218,19 +218,121 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 23981614483289034, guid: e996ec124c41124438084d47e6098692,
+    - target: {fileID: 114019281232637116, guid: e996ec124c41124438084d47e6098692,
         type: 2}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114119549272575864, guid: e996ec124c41124438084d47e6098692,
-        type: 2}
-      propertyPath: showCoordinates
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 33105503294799884, guid: e996ec124c41124438084d47e6098692, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: e996ec124c41124438084d47e6098692, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1001 &1425907929
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 26.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 10.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4636487371286974, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 65585977873224870, guid: e70e8a4ceabf7934da1e63da608bd0be,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1947935619250788, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e70e8a4ceabf7934da1e63da608bd0be, type: 2}
+  m_IsPrefabAsset: 0
+--- !u!1 &1723493712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1947935619250788, guid: e70e8a4ceabf7934da1e63da608bd0be,
+    type: 2}
+  m_PrefabInternal: {fileID: 1425907929}
+--- !u!54 &1723493718 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 54982397729728494, guid: e70e8a4ceabf7934da1e63da608bd0be,
+    type: 2}
+  m_PrefabInternal: {fileID: 1425907929}
+--- !u!114 &1723493720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1723493712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4a39dec1a23a043a14d554ccce8fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Rigidbody: {fileID: 1723493718}
+  CanAttach: 1
+  AllowTwoHanded: 0
+  DisableKinematicOnAttach: 1
+  EnableKinematicOnDetach: 0
+  DropDistance: 1
+  EnableGravityOnDetach: 1
+  AttachedHands: []
+  InteractionPoint: {fileID: 0}
+  OnUseButtonDown:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnUseButtonUp:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnHovering:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnBeginInteraction:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnEndInteraction:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1001 &2146489889
 Prefab:
   m_ObjectHideFlags: 0

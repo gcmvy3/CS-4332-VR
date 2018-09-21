@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4534973689834258}
   - component: {fileID: 33349143355686740}
   - component: {fileID: 23921982053139096}
-  - component: {fileID: 95090422770214654}
   - component: {fileID: 114718974434490190}
   m_Layer: 0
   m_Name: DirtCellPrefab
@@ -86,24 +85,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1401015544050158}
   m_Mesh: {fileID: 4300000, guid: f11266c4f08c3f740b3f771e21ff9022, type: 3}
---- !u!95 &95090422770214654
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1401015544050158}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: f11266c4f08c3f740b3f771e21ff9022, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114718974434490190
 MonoBehaviour:
   m_ObjectHideFlags: 1

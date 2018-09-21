@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4134658691809930}
   - component: {fileID: 33519178881210342}
   - component: {fileID: 23276875747960224}
-  - component: {fileID: 95284212897831234}
   - component: {fileID: 114261171315934962}
   m_Layer: 0
   m_Name: HexCellPrefab
@@ -86,24 +85,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1647583224427960}
   m_Mesh: {fileID: 4300002, guid: 0a084453cd08d804eb360101e196f821, type: 3}
---- !u!95 &95284212897831234
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1647583224427960}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 0a084453cd08d804eb360101e196f821, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114261171315934962
 MonoBehaviour:
   m_ObjectHideFlags: 1

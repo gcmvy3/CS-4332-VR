@@ -74,6 +74,20 @@ public struct HexCoordinates {
         return new Vector2(col, row);
     }
 
+    public HexCoordinates[] GetNeighbors() {
+        //Clockwise starting at the north neighbor
+
+        HexCoordinates[] neighbors = new HexCoordinates[6];
+        neighbors[0] = new HexCoordinates(X, Z + 1);
+        neighbors[1] = new HexCoordinates(X + 1, Z);
+        neighbors[2] = new HexCoordinates(X + 1, Z - 1);
+        neighbors[3] = new HexCoordinates(X, Z - 1);
+        neighbors[4] = new HexCoordinates(X - 1, Z);
+        neighbors[5] = new HexCoordinates(X - 1, Z + 1);
+
+        return neighbors;
+    }
+
     public override string ToString()
     {
         return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";

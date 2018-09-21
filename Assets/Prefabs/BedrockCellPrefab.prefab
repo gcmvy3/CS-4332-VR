@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4490535975056708}
   - component: {fileID: 33993540996133358}
   - component: {fileID: 23277482679664366}
-  - component: {fileID: 95188223937690530}
   - component: {fileID: 114510125034157256}
   m_Layer: 0
   m_Name: BedrockCellPrefab
@@ -86,24 +85,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1503984864615242}
   m_Mesh: {fileID: 4300000, guid: 0a01d83ef23b14243bb080785bffb588, type: 3}
---- !u!95 &95188223937690530
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1503984864615242}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 0a01d83ef23b14243bb080785bffb588, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114510125034157256
 MonoBehaviour:
   m_ObjectHideFlags: 1
