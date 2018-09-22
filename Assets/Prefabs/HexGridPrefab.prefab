@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4862942631572498}
   - component: {fileID: 114119549272575864}
   - component: {fileID: 114019281232637116}
-  - component: {fileID: 33105503294799884}
   - component: {fileID: 114716729302723436}
   - component: {fileID: 114022241625847186}
   m_Layer: 0
@@ -62,13 +61,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &33105503294799884
-MeshFilter:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1344596889895938}
-  m_Mesh: {fileID: 0}
 --- !u!114 &114019281232637116
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -92,6 +84,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa1a3b905c81b2d4fbfdb21bb9a5a856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  missingMaterial: {fileID: 2100000, guid: acc7c4a11c6132b45841a8366b4a4706, type: 2}
+  bedrockTop: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
+  dirtTop: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
+  grassTop: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
+  bedrockSide: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
+  dirtSide: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
+  grassSide: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
 --- !u!114 &114119549272575864
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -107,14 +106,6 @@ MonoBehaviour:
   rows: 36
   maxHeight: 16
   showCoordinates: 0
-  hexCellPrefab: {fileID: 114261171315934962, guid: c94b652ae994d3f498e92a6182c00aa1,
-    type: 2}
-  bedrockCellPrefab: {fileID: 114510125034157256, guid: 30e5489501c1ca34297bd33e8f3ad0b2,
-    type: 2}
-  dirtCellPrefab: {fileID: 114718974434490190, guid: 009c78b6387a85748b1d0198fd2daf15,
-    type: 2}
-  grassCellPrefab: {fileID: 114150919751100606, guid: efa71a9a31ae5bb428e05879c6bcd881,
-    type: 2}
   cellLabelPrefab: {fileID: 114792996082348872, guid: f0e5574ff79e31245a489893a2a868a8,
     type: 2}
 --- !u!114 &114466875614292948

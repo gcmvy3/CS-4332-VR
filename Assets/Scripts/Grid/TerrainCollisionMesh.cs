@@ -53,11 +53,13 @@ public class TerrainCollisionMesh : MonoBehaviour {
         int rows = hexGrid.rows;
         int columns = hexGrid.columns;
 
-        for (int i = 0; i < rows * columns; i++) {
-            Stack<HexCell> stack = hexGrid.GetCellStack(i);
+        for (int z = 0, i = 0; z < rows; z++) {
+            for (int x = 0; x < columns; x++) {
+                CellStack stack = hexGrid.GetCellStack(new Vector2(x, z));
 
-            if(stack != null) {
-                GenerateStackMesh(stack);
+                if (stack != null) {
+                    GenerateStackMesh(stack);
+                }
             }
         }
 
@@ -71,16 +73,15 @@ public class TerrainCollisionMesh : MonoBehaviour {
         navMeshSurface.BuildNavMesh();
     }
     
-    void GenerateStackMesh(Stack<HexCell> stack) {
+    void GenerateStackMesh(CellStack stack) {
 
+        int stackHeight = stack.Count();
         HexCell topCell = stack.Peek();
 
-        Vector3 center = topCell.coordinates.ToOffsetCoordinates();
-        center.y += HexMetrics.height / 2;
+        Vector3 center = stack.coordinates.ToPosition();
+        center += stackHeight * HexMetrics.heightVector;
 
-        int stackHeight = stack.Count;
-
-        HexCoordinates[] neighbors = topCell.coordinates.GetNeighbors();
+        HexCoordinates[] neighbors = stack.coordinates.GetNeighbors();
 
         for (int i = 0; i < 6; i++) {
             //Generates the horizontal part of the terrain (top of the stack)
@@ -91,14 +92,14 @@ public class TerrainCollisionMesh : MonoBehaviour {
             );
 
             //Generates the vertical part of the terrain (sides of the stack)
-            Stack<HexCell> neighbor = hexGrid.GetCellStack(neighbors[i]);
+            CellStack neighbor = hexGrid.GetCellStack(neighbors[i]);
 
             //If we have a neighbor in this direction, check its height
             //If it is taller than us, ignore it (it will create the vertical wall)
             //If it is the same height as us, ignore it (we don't need a vertical wall)
             //If it is shorter than us, create a vertical wall down to its height
             if (neighbor != null) {
-                int neighborHeight = neighbor.Count;
+                int neighborHeight = neighbor.Count();
 
                 float wallHeight = (stackHeight - neighborHeight) * HexMetrics.heightVector.y;
 

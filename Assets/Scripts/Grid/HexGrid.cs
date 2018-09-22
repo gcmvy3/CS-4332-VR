@@ -14,7 +14,7 @@ public class HexGrid : MonoBehaviour {
 
     public Text cellLabelPrefab;
 
-    CellStack[] cellStacks;
+    CellStack[,] cellStacks;
 
     Canvas gridCanvas;
 
@@ -31,7 +31,7 @@ public class HexGrid : MonoBehaviour {
 
     public void GenerateProceduralMap() {
 
-        cellStacks = new Stack<HexCell>[rows * columns];
+        cellStacks = new CellStack[columns, rows];
 
         float[,] heightMap = Utils.GenerateNoiseMap(rows, columns, terrainScale);
 
@@ -39,7 +39,7 @@ public class HexGrid : MonoBehaviour {
             for (int x = 0; x < columns; x++) {
 
                 int stackHeight = (int)(heightMap[x, z] * maxHeight);
-                CreateCellStack(x, z, stackHeight, i++);
+                cellStacks[x, z] = CreateCellStack(x, z, stackHeight, i++);
             }
         }
 
@@ -51,87 +51,64 @@ public class HexGrid : MonoBehaviour {
 		
 	}
 
-    void CreateCellStack(int x, int z, int height, int index) {
-        Vector3 position;
-        position.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
-        position.y = 0f;
-        position.z = z * (HexMetrics.outerRadius * 1.5f);
+    CellStack CreateCellStack(int x, int z, int height, int index) {
 
-        Stack<HexCell> cellStack = new Stack<HexCell>();
+        CellStack cellStack = new GameObject("CellStack" + index).AddComponent<CellStack>();
+        cellStack.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+        cellStack.transform.position = transform.position;
+        cellStack.transform.localPosition = cellStack.coordinates.ToPosition();
 
-        BedrockCell bedrockCell = new BedrockCell(); ;
-        //bedrockCell.transform.SetParent(transform, false);
-        //bedrockCell.transform.localPosition = position;
-        bedrockCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+        BedrockCell bedrockCell = ScriptableObject.CreateInstance<BedrockCell>();
         cellStack.Push(bedrockCell);
-
-        position.y += HexMetrics.height;
 
         for(int i = 0; i < height; i++) {
             HexCell newCell;
 
             if(i == height - 1) {
-                newCell = new GrassCell();
+                newCell = ScriptableObject.CreateInstance<GrassCell>();
             }
             else {
-                newCell = new DirtCell();
+                newCell = ScriptableObject.CreateInstance<DirtCell>();
             }
-            
-            //newCell.transform.SetParent(transform, false);
-            //newCell.transform.localPosition = position;
-            newCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-            cellStack.Push(newCell);
 
-            position.y += HexMetrics.height;
+            cellStack.Push(newCell);
         }
 
         if (showCoordinates) {
+
+            Vector3 position = cellStack.coordinates.ToPosition();
+            position += HexMetrics.heightVector * cellStack.Count();
+
             Text label = Instantiate<Text>(cellLabelPrefab);
             label.rectTransform.SetParent(gridCanvas.transform, false);
             label.rectTransform.anchoredPosition3D =
-                  new Vector3(position.x, position.z, -cellStack.Count * HexMetrics.height);
-            label.text = bedrockCell.coordinates.ToStringOnSeparateLines();
+                  new Vector3(position.x, position.z, -position.y);
+            label.text = cellStack.coordinates.ToStringOnSeparateLines();
         }
 
-        cellStacks[index] = cellStack;
+        return cellStack;
     }
 
-    public Stack<HexCell> GetCellStack(HexCoordinates coords) {
+    public CellStack GetCellStack(HexCoordinates coords) {
         Vector2 offsetCoords = coords.ToOffsetCoordinates();
 
-        int index = (int)(offsetCoords.y * columns + offsetCoords.x);
-
-        if (index >= 0 && index < cellStacks.Length) {
-            return cellStacks[index];
+        CellStack stack = null;
+        try {
+            stack = cellStacks[(int)offsetCoords.x, (int)offsetCoords.y];
         }
-        else {
-            return null;
+        catch(System.IndexOutOfRangeException e) {
+            Debug.Log("WARNING: Tried to access CellStack that is out of bounds");
         }
+        return stack;
     }
 
-    public Stack<HexCell> GetCellStack(int index) {
-        if(index >= 0 && index < cellStacks.Length) {
-            return cellStacks[index];
-        }
-        else {
-            return null;
-        }
+    public CellStack GetCellStack(Vector2 coords) {
+        return cellStacks[(int)coords.x, (int)coords.y];
     }
 
     public void AddCell(HexCell cell, HexCoordinates coords) {
-        Stack<HexCell> stack = GetCellStack(coords);
-
-        HexCell top = stack.Peek();
-
-        /*
-        Vector3 newPosition = top.transform.position;
-        newPosition += HexMetrics.heightVector;
-        cell.transform.position = newPosition;
-
-        cell.transform.parent = GetComponentInParent<Transform>();
-        */
+        CellStack stack = GetCellStack(coords);
         stack.Push(cell);
-
         GenerateMeshes();
     }
 
@@ -141,25 +118,13 @@ public class HexGrid : MonoBehaviour {
     }
 
     public bool CanRemoveCell(HexCoordinates coordinates) {
-
-        Stack<HexCell> stack = GetCellStack(coordinates);
-
-        if(stack.Count > 0) {
-            HexCell top = stack.Peek();
-            if(!(top.GetType() == typeof(BedrockCell))) {
-                return true;
-            }
-        }
-        return false;
+        CellStack stack = GetCellStack(coordinates);
+        return stack.CanPop();
     }
 
     public void RemoveCell(HexCoordinates coordinates) {
-        Stack<HexCell> stack = GetCellStack(coordinates);
-
-        HexCell removedCell = stack.Pop();
-        //Destroy(removedCell.gameObject);
-        removedCell = null;
-
+        CellStack stack = GetCellStack(coordinates);
+        stack.Pop();
         GenerateMeshes();
     }
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 [System.Serializable]
 public class HexCell : ScriptableObject {
 
-	public HexCoordinates coordinates;
+    public CellStack cellStack;
 
     public Material topMaterial;
     public Material sideMaterial;
 
-    int elevation = -1;
+    public int elevation = -1;
     
     // Use this for initialization
     public virtual void Start () {
