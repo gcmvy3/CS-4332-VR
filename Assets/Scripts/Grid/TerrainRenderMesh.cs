@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using System;
 
 [RequireComponent(typeof(HexGrid))]
 public class TerrainRenderMesh : MonoBehaviour {
@@ -17,7 +18,7 @@ public class TerrainRenderMesh : MonoBehaviour {
     public Material dirtSide;
     public Material grassSide;
 
-    enum Materials { missingMaterial, bedrockTop, dirtTop, grassTop, bedrockSide, dirtSide, grassSide };
+    Material[] materials;
 
     GameObject renderObject;
     HexGrid hexGrid;
@@ -34,24 +35,24 @@ public class TerrainRenderMesh : MonoBehaviour {
     // Use this for initialization
     void Awake() {
 
+        materials = new[] {missingMaterial, bedrockTop, dirtTop, grassTop, bedrockSide, dirtSide, grassSide};
+
         renderObject = new GameObject();
         renderObject.name = "Render Mesh";
         renderObject.transform.SetParent(gameObject.transform);
         renderObject.transform.localPosition = new Vector3(0, 0, 0);
 
-        Debug.Log("HERE");
-
         terrainRenderMesh = new Mesh();
         terrainRenderMesh.name = "TerrainRenderMesh";
+        terrainRenderMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
         hexGrid = GetComponent<HexGrid>();
         meshFilter = renderObject.AddComponent<MeshFilter>();
         meshRenderer = renderObject.AddComponent<MeshRenderer>();
-        meshRenderer.enabled = false;
         meshFilter.sharedMesh = terrainRenderMesh;
         vertices = new List<Vector3>();
         triangles = new List<int>();
-        submeshes = new Dictionary<Material, List<int>>();
+        submeshes = new List<int>[materials.Count()];
     }
 
     // Update is called once per frame
@@ -63,7 +64,7 @@ public class TerrainRenderMesh : MonoBehaviour {
         terrainRenderMesh.Clear();
         vertices.Clear();
         triangles.Clear();
-        submeshes.Clear();
+        submeshes = new List<int>[materials.Count()];
 
         triangleIndex = 0;
         int rows = hexGrid.rows;
@@ -83,16 +84,15 @@ public class TerrainRenderMesh : MonoBehaviour {
         terrainRenderMesh.triangles = triangles.ToArray();
 
         //Create a submesh for each material
-        terrainRenderMesh.subMeshCount = submeshes.Count;
+        terrainRenderMesh.subMeshCount = submeshes.Count();
 
         //Set material for each submesh
-        meshRenderer.sharedMaterials = submeshes.Keys.ToArray();
+        meshRenderer.materials = materials;
 
-        Debug.Log("Materials: " + meshRenderer.sharedMaterials[0].name);
-        Debug.Log("Submeshes: " + submeshes[0);
-
-        for(int i = 0; i < meshRenderer.materials.Count(); i++) {
-            terrainRenderMesh.SetTriangles(submeshes[meshRenderer.materials[i]], i);
+        for(int i = 0; i < submeshes.Count(); i++) {
+            if(submeshes[i] != null) {
+                terrainRenderMesh.SetTriangles(submeshes[i], i);
+            }
         }
 
         terrainRenderMesh.RecalculateNormals();
@@ -102,77 +102,85 @@ public class TerrainRenderMesh : MonoBehaviour {
     void GenerateStackMesh(CellStack stack) {
 
         int stackHeight = stack.Count();
-        HexCell topCell = stack.Peek();
-
-        Material topMaterial = getTopMaterial(topCell);
-
-        if(topMaterial == null) {
-            Debug.Log("Material is NULL!");
-        }
-
-        List<int> topMaterialList = getSubmesh(topMaterial);
-
         Vector3 center = stack.coordinates.ToPosition();
         center += stackHeight * HexMetrics.heightVector;
 
-        HexCoordinates[] neighbors = stack.coordinates.GetNeighbors();
+        HexCell topCell = stack.Peek();
+        Material topMaterial = getTopMaterial(topCell);
+        List<int> topMaterialSubmesh = getSubmesh(topMaterial);
 
+        //Generates the horizontal part of the terrain (top of the stack)
         for (int i = 0; i < 6; i++) {
-            //Generates the horizontal part of the terrain (top of the stack)
-            topMaterialList.Add(triangleIndex);
-            AddTriangle(
+            AddTriangleToMesh(
                 center,
                 center + HexMetrics.corners[i],
                 center + HexMetrics.corners[i + 1]
             );
+            AddTriangleToSubmesh(
+                topMaterialSubmesh,
+                center,
+                center + HexMetrics.corners[i],
+                center + HexMetrics.corners[i + 1]
+            );
+        }
 
-            //Generates the vertical part of the terrain (sides of the stack)
+        HexCoordinates[] neighbors = stack.coordinates.GetNeighbors();
+
+        //Generates the vertical part of the terrain (sides of the stack)
+        for (int i = 0; i < 6; i++) { 
             CellStack neighbor = hexGrid.GetCellStack(neighbors[i]);
 
             //If we have a neighbor in this direction, check its height
             //If it is taller than us, ignore it (it will create the vertical wall)
             //If it is the same height as us, ignore it (we don't need a vertical wall)
             //If it is shorter than us, create a vertical wall down to its height
+
+            center = stack.coordinates.ToPosition();
+            center += stackHeight * HexMetrics.heightVector;
+
+            int wallHeight = stackHeight;
+
             if (neighbor != null) {
-                int neighborHeight = neighbor.Count();
-
-                float wallHeight = (stackHeight - neighborHeight) * HexMetrics.heightVector.y;
-
-                if (wallHeight > 0) {
-                    Vector3 wallHeightVector = new Vector3(0, wallHeight, 0);
-
-                    AddTriangle(
-                        center + HexMetrics.corners[i] - wallHeightVector,
-                        center + HexMetrics.corners[i + 1],
-                        center + HexMetrics.corners[i]
-
-                    );
-
-                    AddTriangle(
-                        center + HexMetrics.corners[i] - wallHeightVector,
-                        center + HexMetrics.corners[i + 1] - wallHeightVector,
-                        center + HexMetrics.corners[i + 1]
-                    );
-                }
+                wallHeight -= neighbor.Count();
             }
-            else {
-                AddTriangle(
-                    center + HexMetrics.corners[i] - HexMetrics.heightVector * stackHeight,
+            
+            for(int j = 0; j < wallHeight; j++) {
+
+                HexCell currentCell = stack.PeekAt(stack.Count() - (j + 1));
+                Material sideMaterial = getSideMaterial(currentCell);
+                List<int> sideMaterialSubmesh = getSubmesh(sideMaterial);
+
+                AddTriangleToMesh(
+                    center + HexMetrics.corners[i] - HexMetrics.heightVector,
                     center + HexMetrics.corners[i + 1],
                     center + HexMetrics.corners[i]
 
                 );
+                AddTriangleToSubmesh(
+                    sideMaterialSubmesh,
+                    center + HexMetrics.corners[i] - HexMetrics.heightVector,
+                    center + HexMetrics.corners[i + 1],
+                    center + HexMetrics.corners[i]
 
-                AddTriangle(
-                    center + HexMetrics.corners[i] - HexMetrics.heightVector * stackHeight,
-                    center + HexMetrics.corners[i + 1] - HexMetrics.heightVector * stackHeight,
+                );
+                AddTriangleToMesh(
+                    center + HexMetrics.corners[i] - HexMetrics.heightVector,
+                    center + HexMetrics.corners[i + 1] - HexMetrics.heightVector,
                     center + HexMetrics.corners[i + 1]
                 );
+                AddTriangleToSubmesh(
+                    sideMaterialSubmesh,
+                    center + HexMetrics.corners[i] - HexMetrics.heightVector,
+                    center + HexMetrics.corners[i + 1] - HexMetrics.heightVector,
+                    center + HexMetrics.corners[i + 1]
+                );
+
+                center -= HexMetrics.heightVector;
             }
         }
     }
 
-    void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3) {
+    void AddTriangleToMesh(Vector3 v1, Vector3 v2, Vector3 v3) {
 
         int vertexIndex = vertices.Count;
         vertices.Add(v1);
@@ -181,20 +189,27 @@ public class TerrainRenderMesh : MonoBehaviour {
         triangles.Add(vertexIndex);
         triangles.Add(vertexIndex + 1);
         triangles.Add(vertexIndex + 2);
-        triangleIndex++;
+    }
+
+    void AddTriangleToSubmesh(List<int> submesh, Vector3 v1, Vector3 v2, Vector3 v3) {
+        submesh.Add(triangleIndex);
+        submesh.Add(triangleIndex + 1);
+        submesh.Add(triangleIndex + 2);
+        triangleIndex += 3;
     }
 
     private List<int> getSubmesh(Material m) {
-        if(!submeshes.ContainsKey(m)) {
-            List<int> newList = new List<int>();
-            submeshes.Add(m, newList);
+        int materialIndex = Array.IndexOf(materials, m);
+        List<int> submesh = submeshes[materialIndex];
+        if(submesh == null) {
+            submesh = submeshes[materialIndex] = new List<int>();
         }
-
-        return submeshes[m];
+        return submesh;
     }
 
     private Material getTopMaterial(HexCell cell) {
-        System.Type cellType = cell.GetType();
+        Type cellType = cell.GetType();
+
         if(cellType.Name == "BedrockCell") {
             return bedrockTop;
         }
@@ -210,7 +225,7 @@ public class TerrainRenderMesh : MonoBehaviour {
     }
 
     private Material getSideMaterial(HexCell cell) {
-        System.Type cellType = cell.GetType();
+        Type cellType = cell.GetType();
         if (cellType.Name == "BedrockCell") {
             return bedrockSide;
         }

@@ -4,26 +4,31 @@ using UnityEngine;
 
 public class CellStack : MonoBehaviour {
 
-    Stack<HexCell> stack = new Stack<HexCell>();
+    List<HexCell> cells = new List<HexCell>();
     public HexCoordinates coordinates;
 
     public int Count() {
-        return stack.Count;
+        return cells.Count;
     }
 
     public HexCell Peek() {
-        return stack.Peek();
+        return cells[Count() - 1];
     }
 
     public HexCell Pop() {
-        return stack.Pop();
+        HexCell top = Peek();
+        cells.RemoveAt(Count() - 1);
+        return top;
     }
 
     public void Push(HexCell cell) {
         cell.cellStack = this;
         cell.elevation = Count();
+        cells.Add(cell);
+    }
 
-        stack.Push(cell);
+    public HexCell PeekAt(int index) {
+        return cells[index];
     }
 
     public bool CanPop() {
