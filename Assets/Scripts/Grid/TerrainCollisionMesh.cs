@@ -78,7 +78,7 @@ public class TerrainCollisionMesh : MonoBehaviour {
         int stackHeight = stack.Count();
         HexCell topCell = stack.Peek();
 
-        Vector3 center = stack.coordinates.ToPosition();
+        Vector3 center = stack.coordinates.ToLocalPosition();
         center += stackHeight * HexMetrics.heightVector;
 
         HexCoordinates[] neighbors = stack.coordinates.GetNeighbors();

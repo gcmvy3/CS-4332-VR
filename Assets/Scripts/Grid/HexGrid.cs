@@ -56,7 +56,7 @@ public class HexGrid : MonoBehaviour {
         CellStack cellStack = new GameObject("CellStack" + index).AddComponent<CellStack>();
         cellStack.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cellStack.transform.position = transform.position;
-        cellStack.transform.localPosition = cellStack.coordinates.ToPosition();
+        cellStack.transform.localPosition = cellStack.coordinates.ToLocalPosition();
 
         BedrockCell bedrockCell = ScriptableObject.CreateInstance<BedrockCell>();
         cellStack.Push(bedrockCell);
@@ -76,7 +76,7 @@ public class HexGrid : MonoBehaviour {
 
         if (showCoordinates) {
 
-            Vector3 position = cellStack.coordinates.ToPosition();
+            Vector3 position = cellStack.coordinates.ToLocalPosition();
             position += HexMetrics.heightVector * cellStack.Count();
 
             Text label = Instantiate<Text>(cellLabelPrefab);

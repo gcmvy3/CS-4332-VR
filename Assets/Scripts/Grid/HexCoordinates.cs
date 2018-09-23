@@ -67,13 +67,26 @@ public struct HexCoordinates {
         }
     }
 
-    public Vector3 ToPosition() {
+    public Vector3 ToLocalPosition() {
         Vector2 offset = ToOffsetCoordinates();
 
         Vector3 position = new Vector3();
         position.x = offset.x * (HexMetrics.innerRadius * 2f) + (offset.y % 2) * HexMetrics.innerRadius; ;
         position.y = 0f;
         position.z = offset.y * (HexMetrics.outerRadius * 1.5f);
+
+        return position;
+    }
+
+    public Vector3 ToGlobalPosition(HexGrid grid) {
+        Vector2 offset = ToOffsetCoordinates();
+
+        Vector3 position = new Vector3();
+        position.x = offset.x * (HexMetrics.innerRadius * 2f) + (offset.y % 2) * HexMetrics.innerRadius; ;
+        position.y = 0f;
+        position.z = offset.y * (HexMetrics.outerRadius * 1.5f);
+
+        position += grid.transform.position;
 
         return position;
     }

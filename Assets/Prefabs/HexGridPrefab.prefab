@@ -72,6 +72,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6e5eb5e7fa39a43a2bba4c13fc66b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ghostCellPrefab: {fileID: 1647583224427960, guid: c94b652ae994d3f498e92a6182c00aa1,
+    type: 2}
   ghostMaterial: {fileID: 2100000, guid: ef6a36394056abd44a6b7bda51e70a15, type: 2}
 --- !u!114 &114022241625847186
 MonoBehaviour:

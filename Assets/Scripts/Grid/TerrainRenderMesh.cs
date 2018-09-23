@@ -102,7 +102,7 @@ public class TerrainRenderMesh : MonoBehaviour {
     void GenerateStackMesh(CellStack stack) {
 
         int stackHeight = stack.Count();
-        Vector3 center = stack.coordinates.ToPosition();
+        Vector3 center = stack.coordinates.ToLocalPosition();
         center += stackHeight * HexMetrics.heightVector;
 
         HexCell topCell = stack.Peek();
@@ -135,7 +135,7 @@ public class TerrainRenderMesh : MonoBehaviour {
             //If it is the same height as us, ignore it (we don't need a vertical wall)
             //If it is shorter than us, create a vertical wall down to its height
 
-            center = stack.coordinates.ToPosition();
+            center = stack.coordinates.ToLocalPosition();
             center += stackHeight * HexMetrics.heightVector;
 
             int wallHeight = stackHeight;
