@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: aa1a3b905c81b2d4fbfdb21bb9a5a856
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - missingMaterial: {fileID: 2100000, guid: acc7c4a11c6132b45841a8366b4a4706, type: 2}
+  - bedrockTop: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
+  - dirtTop: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
+  - grassTop: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
+  - bedrockSide: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
+  - dirtSide: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
+  - grassSide: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

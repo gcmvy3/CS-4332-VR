@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1344596889895938}
+  m_IsPrefabAsset: 1
+--- !u!1 &1344596889895938
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4862942631572498}
+  - component: {fileID: 114119549272575864}
+  - component: {fileID: 114019281232637116}
+  - component: {fileID: 114716729302723436}
+  - component: {fileID: 114022241625847186}
+  m_Layer: 0
+  m_Name: TerrainPrefab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!1 &1558413593525616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 224359539674091984}
+  - component: {fileID: 223168601018117102}
+  - component: {fileID: 114466875614292948}
+  m_Layer: 5
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &4862942631572498
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1344596889895938}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -46.1, y: -23.1, z: 5.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 224359539674091984}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114019281232637116
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1344596889895938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e6e5eb5e7fa39a43a2bba4c13fc66b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghostCellPrefab: {fileID: 1647583224427960, guid: c94b652ae994d3f498e92a6182c00aa1,
+    type: 2}
+  ghostMaterial: {fileID: 2100000, guid: ef6a36394056abd44a6b7bda51e70a15, type: 2}
+--- !u!114 &114022241625847186
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1344596889895938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1a3b905c81b2d4fbfdb21bb9a5a856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missingMaterial: {fileID: 2100000, guid: acc7c4a11c6132b45841a8366b4a4706, type: 2}
+  bedrockTop: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
+  waterTop: {fileID: 2100000, guid: 73dbda025b56ffe4086dee5cc9dfd22e, type: 2}
+  dirtTop: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
+  grassTop: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
+  bedrockSide: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
+  waterSide: {fileID: 2100000, guid: 73dbda025b56ffe4086dee5cc9dfd22e, type: 2}
+  dirtSide: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
+  grassSide: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
+--- !u!114 &114119549272575864
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1344596889895938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6130fc5b04d38bc41b94e352fdbd0234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  columns: 36
+  rows: 36
+  maxHeight: 16
+  waterLevel: 3
+  showCoordinates: 0
+  cellLabelPrefab: {fileID: 114792996082348872, guid: f0e5574ff79e31245a489893a2a868a8,
+    type: 2}
+--- !u!114 &114466875614292948
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1558413593525616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 10
+--- !u!114 &114716729302723436
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1344596889895938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c114ffcdd8129904888df2930db7a1c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!223 &223168601018117102
+Canvas:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1558413593525616}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!224 &224359539674091984
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1558413593525616}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4862942631572498}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
