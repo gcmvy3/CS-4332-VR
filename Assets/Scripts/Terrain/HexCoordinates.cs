@@ -18,7 +18,7 @@ public struct HexCoordinates {
         return new HexCoordinates(x - z / 2, z);
     }
 
-    public static HexCoordinates FromPosition(Vector3 position) {
+    public static HexCoordinates FromGlobalPosition(Vector3 position) {
         float x = position.x / (HexMetrics.innerRadius * 2f);
         float y = -x;
 
@@ -78,15 +78,10 @@ public struct HexCoordinates {
         return position;
     }
 
-    public Vector3 ToGlobalPosition(HexGrid grid) {
-        Vector2 offset = ToOffsetCoordinates();
+    public Vector3 ToGlobalPosition(TerrainChunk chunk) {
+        Vector3 position = ToLocalPosition();
 
-        Vector3 position = new Vector3();
-        position.x = offset.x * (HexMetrics.innerRadius * 2f) + (offset.y % 2) * HexMetrics.innerRadius; ;
-        position.y = 0f;
-        position.z = offset.y * (HexMetrics.outerRadius * 1.5f);
-
-        position += grid.transform.position;
+        position += chunk.transform.position;
 
         return position;
     }

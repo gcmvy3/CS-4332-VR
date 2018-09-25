@@ -273,9 +273,10 @@
     <Compile Include="Assets\Scripts\Terrain\HexCell.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexCoordinates.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexCoordinatesDrawer.cs" />
-    <Compile Include="Assets\Scripts\Terrain\HexGrid.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexMetrics.cs" />
+    <Compile Include="Assets\Scripts\Terrain\HexTerrain.cs" />
     <Compile Include="Assets\Scripts\Terrain\Terraform.cs" />
+    <Compile Include="Assets\Scripts\Terrain\TerrainChunk.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerrainCollisionMesh.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerrainRenderMesh.cs" />
     <Compile Include="Assets\Scripts\Terrain\WaterCell.cs" />

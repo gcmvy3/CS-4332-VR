@@ -384,6 +384,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc26656d1435d9e4aa084df0b4f1c269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PointerColor: {r: 1, g: 0, b: 0, a: 0}
+  PointerWidth: 0.02
+  terraformEnabled: 1
 --- !u!124 &124000013977819758
 Behaviour:
   m_ObjectHideFlags: 1

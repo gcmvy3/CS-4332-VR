@@ -5,7 +5,6 @@ using UnityEngine.AI;
 using System.Linq;
 using System;
 
-[RequireComponent(typeof(HexGrid))]
 public class TerrainRenderMesh : MonoBehaviour {
 
     public Material missingMaterial;
@@ -23,7 +22,7 @@ public class TerrainRenderMesh : MonoBehaviour {
     Material[] materials;
 
     GameObject renderObject;
-    HexGrid hexGrid;
+    TerrainChunk chunk;
     Mesh terrainRenderMesh;
     List<Vector3> vertices;
     List<int> triangles;
@@ -36,30 +35,32 @@ public class TerrainRenderMesh : MonoBehaviour {
 
     // Use this for initialization
     void Awake() {
+    }
 
-        materials = new[] {missingMaterial, bedrockTop, waterTop, dirtTop, grassTop, bedrockSide, waterSide, dirtSide, grassSide};
+    // Update is called once per frame
+    void Update() {
 
+    }
+
+    public void Init() {
         renderObject = new GameObject();
         renderObject.name = "Render Mesh";
         renderObject.transform.SetParent(gameObject.transform);
         renderObject.transform.localPosition = new Vector3(0, 0, 0);
 
+        materials = new[] { missingMaterial, bedrockTop, waterTop, dirtTop, grassTop, bedrockSide, waterSide, dirtSide, grassSide };
+
         terrainRenderMesh = new Mesh();
         terrainRenderMesh.name = "TerrainRenderMesh";
         terrainRenderMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-        hexGrid = GetComponent<HexGrid>();
+        chunk = GetComponent<TerrainChunk>();
         meshFilter = renderObject.AddComponent<MeshFilter>();
         meshRenderer = renderObject.AddComponent<MeshRenderer>();
         meshFilter.sharedMesh = terrainRenderMesh;
         vertices = new List<Vector3>();
         triangles = new List<int>();
         submeshes = new List<int>[materials.Count()];
-    }
-
-    // Update is called once per frame
-    void Update() {
-
     }
 
     public void Generate() {
@@ -69,12 +70,12 @@ public class TerrainRenderMesh : MonoBehaviour {
         submeshes = new List<int>[materials.Count()];
 
         triangleIndex = 0;
-        int rows = hexGrid.rows;
-        int columns = hexGrid.columns;
+        int rows = chunk.size;
+        int columns = chunk.size;
 
         for (int z = 0, i = 0; z < rows; z++) {
             for (int x = 0; x < columns; x++) {
-                CellStack stack = hexGrid.GetCellStack(new Vector2(x, z));
+                CellStack stack = chunk.GetCellStack(new Vector2(x, z));
 
                 if (stack != null) {
                     GenerateStackMesh(stack);
@@ -104,7 +105,10 @@ public class TerrainRenderMesh : MonoBehaviour {
     void GenerateStackMesh(CellStack stack) {
 
         int stackHeight = stack.Count();
-        Vector3 center = stack.coordinates.ToLocalPosition();
+        Vector2 offset = stack.coordinates.ToOffsetCoordinates();
+        offset = new Vector3(offset.x % chunk.size, offset.y % chunk.size);
+        Vector3 center = HexCoordinates.FromOffsetCoordinates((int)offset.x, (int)offset.y).ToLocalPosition();
+        center += new Vector3(0, transform.localPosition.y, 0);
         center += stackHeight * HexMetrics.heightVector;
 
         HexCell topCell = stack.Peek();
@@ -129,21 +133,18 @@ public class TerrainRenderMesh : MonoBehaviour {
         HexCoordinates[] neighbors = stack.coordinates.GetNeighbors();
 
         //Generates the vertical part of the terrain (sides of the stack)
-        for (int i = 0; i < 6; i++) { 
-            CellStack neighbor = hexGrid.GetCellStack(neighbors[i]);
+        for (int i = 0; i < 6; i++) {
+            int wallHeight = stackHeight;
+
+            CellStack neighbor = chunk.GetCellStack(neighbors[i]);
 
             //If we have a neighbor in this direction, check its height
             //If it is taller than us, ignore it (it will create the vertical wall)
             //If it is the same height as us, ignore it (we don't need a vertical wall)
             //If it is shorter than us, create a vertical wall down to its height
 
-            center = stack.coordinates.ToLocalPosition();
-            center += stackHeight * HexMetrics.heightVector;
-
-            int wallHeight = stackHeight;
-
             if (neighbor != null) {
-                wallHeight -= neighbor.Count();
+                wallHeight -= neighbor.Count() * (int)HexMetrics.height;
             }
             
             for(int j = 0; j < wallHeight; j++) {
@@ -179,6 +180,8 @@ public class TerrainRenderMesh : MonoBehaviour {
 
                 center -= HexMetrics.heightVector;
             }
+
+            center += wallHeight * HexMetrics.heightVector;
         }
     }
 
