@@ -29,10 +29,10 @@ public class Terraform : MonoBehaviour {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
 
-        TerrainChunk chunk = terrain.GetChunk(coordinates);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
 
         try {
-            CellStack stack = chunk.GetCellStack(coordinates);
+            CellStack stack = chunk.GetCellStackFromWorldCoords(coordinates);
 
             Vector3 ghostPosition = stack.coordinates.ToGlobalPosition(chunk) + HexMetrics.heightVector * stack.Count();
             ghostPosition += HexMetrics.heightVector / 2;
@@ -46,21 +46,21 @@ public class Terraform : MonoBehaviour {
     public void PlaceCell(Vector3 position) {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
-        TerrainChunk chunk = terrain.GetChunk(coordinates);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
         chunk.AddCell(Instantiate<HexCell>(cellType), coordinates);
     }
 
     public bool CanRemoveCell(Vector3 position) {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
-        TerrainChunk chunk = terrain.GetChunk(coordinates);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
         return chunk.CanRemoveCell(coordinates);
     }
 
     public void RemoveCell(Vector3 position) {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
-        TerrainChunk chunk = terrain.GetChunk(coordinates);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
         chunk.RemoveCell(coordinates);
     }
 

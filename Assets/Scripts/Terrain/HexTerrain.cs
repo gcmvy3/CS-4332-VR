@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class HexTerrain : MonoBehaviour {
 
-    public static float terrainScale = 5.0f;
+    public float terrainScale = 5.0f;
     public int chunkSize = 16;
     public int chunkRows = 2;
     public int chunkColumns = 2;
@@ -57,44 +57,18 @@ public class HexTerrain : MonoBehaviour {
 		
 	}
 
-    public TerrainChunk GetChunk(HexCoordinates coords) {
+    public TerrainChunk GetChunkFromWorldCoords(HexCoordinates coords) {
         Vector2 offsetCoords = coords.ToOffsetCoordinates();
 
-        Vector2 chunkCoords = new Vector2(offsetCoords.x / chunkSize, offsetCoords.y / chunkSize);
+        Vector2 chunkIndex = new Vector2(offsetCoords.x / chunkSize, offsetCoords.y / chunkSize);
 
         TerrainChunk chunk = null;
         try {
-            chunk = chunks[(int)chunkCoords.x, (int)chunkCoords.y];
+            chunk = chunks[(int)Math.Floor(chunkIndex.x), (int)Math.Floor(chunkIndex.y)];
         }
         catch (IndexOutOfRangeException e) {
             Debug.LogWarning("WARNING: Tried to access chunk that is out of bounds");
         }
         return chunk;
-    }
-
-    public CellStack GetCellStack(HexCoordinates coords) {
-        CellStack stack = null;
-        try {
-            TerrainChunk chunk = GetChunk(coords);
-            stack = chunk.GetCellStack(coords);
-        }
-        catch (IndexOutOfRangeException e) {
-            Debug.LogWarning("WARNING: Tried to access CellStack that is out of bounds");
-        }
-        return stack;
-    }
-
-    public CellStack GetCellStack(Vector2 coords) {
-        Vector2 chunkCoords = new Vector2(coords.x / chunkSize, coords.y / chunkSize);
-
-        CellStack stack = null;
-        try {
-            TerrainChunk chunk = chunks[(int)chunkCoords.x, (int)chunkCoords.y];
-            stack = chunk.GetCellStack(coords);
-        }
-        catch (IndexOutOfRangeException e) {
-            Debug.LogWarning("WARNING: Tried to access CellStack that is out of bounds");
-        }
-        return stack;
     }
 }

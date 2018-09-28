@@ -57,10 +57,10 @@ public class TerrainCollisionMesh : MonoBehaviour {
 
         for (int z = 0, i = 0; z < rows; z++) {
             for (int x = 0; x < columns; x++) {
-                CellStack stack = chunk.GetCellStack(new Vector2(x, z));
+                CellStack stack = chunk.GetCellStackFromChunkOffset(new Vector2(x, z));
 
                 if (stack != null) {
-                    GenerateStackMesh(stack);
+                    GenerateStackMesh(x, z, stack);
                 }
             }
         }
@@ -75,12 +75,13 @@ public class TerrainCollisionMesh : MonoBehaviour {
         navMeshSurface.BuildNavMesh();
     }
     
-    void GenerateStackMesh(CellStack stack) {
+    void GenerateStackMesh(int x, int z, CellStack stack) {
 
         int stackHeight = stack.Count();
-        Vector2 offset = stack.coordinates.ToOffsetCoordinates();
-        offset = new Vector3(offset.x % chunk.size, offset.y % chunk.size);
-        Vector3 center = HexCoordinates.FromOffsetCoordinates((int)offset.x, (int)offset.y).ToLocalPosition();
+
+        Vector2 worldOffset = new Vector2(x + chunk.offsetOrigin.x, z + chunk.offsetOrigin.y);
+
+        Vector3 center = HexCoordinates.FromOffsetCoordinates(x, z).ToLocalPosition();
         center += new Vector3(0, transform.localPosition.y, 0);
         center += stackHeight * HexMetrics.heightVector;
 
@@ -97,7 +98,7 @@ public class TerrainCollisionMesh : MonoBehaviour {
             );
 
             //Generates the vertical part of the terrain (sides of the stack)
-            CellStack neighbor = chunk.GetCellStack(neighbors[i]);
+            CellStack neighbor = chunk.GetCellStackFromWorldCoords(neighbors[i]);
 
             //If we have a neighbor in this direction, check its height
             //If it is taller than us, ignore it (it will create the vertical wall)

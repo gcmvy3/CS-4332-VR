@@ -31,18 +31,22 @@ public class TerrainChunk : MonoBehaviour {
 	}
 
     public void Init(HexTerrain parent, float[,] heightMap, Vector2 origin) {
-
         collisionMesh = GetComponent<TerrainCollisionMesh>();
         collisionMesh.Init();
         renderMesh = GetComponent<TerrainRenderMesh>();
         renderMesh.Init();
 
-        gridCanvas = GetComponentInChildren<Canvas>();
-
         transform.parent = parent.transform;
         transform.position = parent.transform.localPosition;
         transform.localPosition = new Vector3(HexMetrics.innerRadius * 2 * origin.x, 0, HexMetrics.outerRadius * 1.5f * origin.y);
         //transform.localPosition = new Vector3(0, 0, 0);
+
+        gridCanvas = GetComponentInChildren<Canvas>();
+
+        if(gridCanvas == null) {
+            gridCanvas.transform.position = transform.position;
+            gridCanvas.transform.localPosition = transform.localPosition;
+        }
 
         terrain = parent;
         size = parent.chunkSize;
@@ -53,7 +57,7 @@ public class TerrainChunk : MonoBehaviour {
             for (int x = 0; x < size; x++) {
 
                 int stackHeight = (int)(heightMap[x, z] * terrain.maxHeight);
-                cellStacks[x, z] = CreateCellStack(x, z, stackHeight, i++);
+                cellStacks[x, z] = CreateCellStack(x, z, stackHeight);
             }
         }
 
@@ -62,7 +66,7 @@ public class TerrainChunk : MonoBehaviour {
         initialized = true;
     }
 
-    CellStack CreateCellStack(int x, int z, int height, int index) {
+    CellStack CreateCellStack(int x, int z, int height) {
 
         CellStack cellStack = ScriptableObject.CreateInstance<CellStack>();
         cellStack.coordinates = HexCoordinates.FromOffsetCoordinates(x + (int)offsetOrigin.x, z + (int)offsetOrigin.y);
@@ -88,7 +92,7 @@ public class TerrainChunk : MonoBehaviour {
             cellStack.Push(newCell);
         }
 
-        if (showCoordinates) {
+        if (showCoordinates && gridCanvas != null) {
             Vector3 position = cellStack.coordinates.ToLocalPosition();
             position += HexMetrics.heightVector * (cellStack.Count() + 1);
 
@@ -106,14 +110,22 @@ public class TerrainChunk : MonoBehaviour {
         renderMesh.Generate();
     }
 
-    public CellStack GetCellStack(HexCoordinates coords) {
+    public CellStack GetCellStackFromWorldCoords(HexCoordinates coords) {
         Vector2 offsetCoords = coords.ToOffsetCoordinates();
-        return GetCellStack(offsetCoords);
+        return GetCellStackFromWorldOffset(offsetCoords);
     }
 
-    public CellStack GetCellStack(Vector2 coords) {
-        //coords.x += offsetOrigin.x;
-        //coords.y += offsetOrigin.y;
+    public CellStack GetCellStackFromChunkCoords(HexCoordinates coords) {
+        Vector2 offsetCoords = coords.ToOffsetCoordinates();
+        return GetCellStackFromChunkOffset(offsetCoords);
+    }
+
+    public CellStack GetCellStackFromWorldOffset(Vector2 coords) {
+        coords -= offsetOrigin;
+        return GetCellStackFromChunkOffset(coords);
+    }
+
+    public CellStack GetCellStackFromChunkOffset(Vector2 coords) {
         CellStack stack = null;
         try {
             stack = cellStacks[(int)coords.x, (int)coords.y];
@@ -125,18 +137,18 @@ public class TerrainChunk : MonoBehaviour {
     }
 
     public void AddCell(HexCell cell, HexCoordinates coords) {
-        CellStack stack = GetCellStack(coords);
+        CellStack stack = GetCellStackFromWorldCoords(coords);
         stack.Push(cell);
         GenerateMeshes();
     }
 
     public bool CanRemoveCell(HexCoordinates coordinates) {
-        CellStack stack = GetCellStack(coordinates);
+        CellStack stack = GetCellStackFromWorldCoords(coordinates);
         return stack.CanPop();
     }
 
     public void RemoveCell(HexCoordinates coordinates) {
-        CellStack stack = GetCellStack(coordinates);
+        CellStack stack = GetCellStackFromWorldCoords(coordinates);
         stack.Pop();
         GenerateMeshes();
     }
