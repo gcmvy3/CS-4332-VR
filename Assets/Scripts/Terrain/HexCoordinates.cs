@@ -67,7 +67,7 @@ public struct HexCoordinates {
         }
     }
 
-    public Vector3 ToLocalPosition() {
+    public Vector3 ToChunkPosition() {
         Vector2 offset = ToOffsetCoordinates();
 
         Vector3 position = new Vector3();
@@ -78,8 +78,8 @@ public struct HexCoordinates {
         return position;
     }
 
-    public Vector3 ToGlobalPosition(TerrainChunk chunk) {
-        Vector3 position = ToLocalPosition();
+    public Vector3 ToWorldPosition(TerrainChunk chunk) {
+        Vector3 position = ToChunkPosition();
 
         position += chunk.transform.parent.position;
 

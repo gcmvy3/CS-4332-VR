@@ -34,7 +34,7 @@ public class Terraform : MonoBehaviour {
         try {
             CellStack stack = chunk.GetCellStackFromWorldCoords(coordinates);
 
-            Vector3 ghostPosition = stack.coordinates.ToGlobalPosition(chunk) + HexMetrics.heightVector * stack.Count();
+            Vector3 ghostPosition = stack.coordinates.ToWorldPosition(chunk) + HexMetrics.heightVector * stack.Count();
             ghostPosition += HexMetrics.heightVector / 2;
             ghostCellPrefab.transform.localPosition = ghostPosition;
         }

@@ -103,7 +103,7 @@ public class TerrainChunk : MonoBehaviour {
         }
 
         if (showCoordinates && gridCanvas != null) {
-            Vector3 position = cellStack.coordinates.ToLocalPosition();
+            Vector3 position = cellStack.coordinates.ToChunkPosition();
             position += HexMetrics.heightVector * (cellStack.Count() + 1);
 
             Text label = Instantiate<Text>(terrain.cellLabelPrefab);

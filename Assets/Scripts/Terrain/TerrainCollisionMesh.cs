@@ -81,7 +81,7 @@ public class TerrainCollisionMesh : MonoBehaviour {
 
         Vector2 worldOffset = new Vector2(x + chunk.offsetOrigin.x, z + chunk.offsetOrigin.y);
 
-        Vector3 center = HexCoordinates.FromOffsetCoordinates(x, z).ToLocalPosition();
+        Vector3 center = HexCoordinates.FromOffsetCoordinates(x, z).ToChunkPosition();
         center += new Vector3(0, transform.localPosition.y, 0);
         center += stackHeight * HexMetrics.heightVector;
 

@@ -122,7 +122,7 @@ MonoBehaviour:
   chunkSize: 8
   chunkRows: 2
   chunkColumns: 2
-  maxHeight: 16
+  maxHeight: 12
   waterLevel: 5
   cellLabelPrefab: {fileID: 114792996082348872, guid: f0e5574ff79e31245a489893a2a868a8,
     type: 2}
