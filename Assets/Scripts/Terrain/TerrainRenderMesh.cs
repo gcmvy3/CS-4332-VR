@@ -133,24 +133,27 @@ public class TerrainRenderMesh : MonoBehaviour {
 
         HexCoordinates[] neighbors = stack.coordinates.GetNeighbors();
 
+        Vector3 topCenter = center;
+
         //Generates the vertical part of the terrain (sides of the stack)
         for (int i = 0; i < 6; i++) {
-            int wallHeight = stackHeight;
 
-            CellStack neighbor = chunk.GetCellStackFromWorldCoords(neighbors[i]);
+            center = topCenter;
 
             //If we have a neighbor in this direction, check its height
             //If it is taller than us, ignore it (it will create the vertical wall)
             //If it is the same height as us, ignore it (we don't need a vertical wall)
             //If it is shorter than us, create a vertical wall down to its height
 
+            CellStack neighbor = chunk.GetCellStackFromWorldCoords(neighbors[i]);
+            int neighborHeight = 0;
             if (neighbor != null) {
-                wallHeight -= neighbor.Count();
+                neighborHeight = neighbor.Count();
             }
 
-            for(int j = 1; j <= wallHeight; j++) {
+            for (int elevation = stackHeight; elevation > neighborHeight; elevation--) {
 
-                HexCell currentCell = stack.PeekAt(stack.Count() - j);
+                HexCell currentCell = stack.PeekAt(elevation - 1);
                 Material sideMaterial = getSideMaterial(currentCell);
                 List<int> sideMaterialSubmesh = getSubmesh(sideMaterial);
 
@@ -181,8 +184,6 @@ public class TerrainRenderMesh : MonoBehaviour {
 
                 center -= HexMetrics.heightVector;
             }
-
-            center += wallHeight * HexMetrics.heightVector;
         }
     }
 

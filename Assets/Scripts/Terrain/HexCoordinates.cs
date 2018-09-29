@@ -81,7 +81,7 @@ public struct HexCoordinates {
     public Vector3 ToGlobalPosition(TerrainChunk chunk) {
         Vector3 position = ToLocalPosition();
 
-        position += chunk.transform.position;
+        position += chunk.transform.parent.position;
 
         return position;
     }

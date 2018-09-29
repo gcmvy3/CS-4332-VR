@@ -16,7 +16,7 @@ public class TerrainChunk : MonoBehaviour {
 
     TerrainCollisionMesh collisionMesh;
     TerrainRenderMesh renderMesh;
-    Canvas gridCanvas;
+    Canvas gridCanvas = null;
 
     public Vector2 offsetOrigin;
 
@@ -31,26 +31,23 @@ public class TerrainChunk : MonoBehaviour {
 	}
 
     public void Init(HexTerrain parent, float[,] heightMap, Vector2 origin) {
+        terrain = parent;
+        size = parent.chunkSize;
+        offsetOrigin = origin;
+
         collisionMesh = GetComponent<TerrainCollisionMesh>();
         collisionMesh.Init();
         renderMesh = GetComponent<TerrainRenderMesh>();
         renderMesh.Init();
 
         transform.parent = parent.transform;
-        transform.position = parent.transform.localPosition;
+        transform.position = parent.transform.position;
         transform.localPosition = new Vector3(HexMetrics.innerRadius * 2 * origin.x, 0, HexMetrics.outerRadius * 1.5f * origin.y);
-        //transform.localPosition = new Vector3(0, 0, 0);
 
-        gridCanvas = GetComponentInChildren<Canvas>();
-
-        if(gridCanvas == null) {
-            gridCanvas.transform.position = transform.position;
-            gridCanvas.transform.localPosition = transform.localPosition;
+        if(showCoordinates) {
+            InitCanvas();
         }
 
-        terrain = parent;
-        size = parent.chunkSize;
-        offsetOrigin = origin;
         cellStacks = new CellStack[size, size];
 
         for (int z = 0, i = 0; z < size; z++) {
@@ -64,6 +61,19 @@ public class TerrainChunk : MonoBehaviour {
         GenerateMeshes();
 
         initialized = true;
+    }
+
+    void InitCanvas() {
+        gridCanvas = new GameObject("Canvas").AddComponent<Canvas>();
+        gridCanvas.renderMode = RenderMode.WorldSpace;
+        gridCanvas.transform.parent = transform;
+        gridCanvas.transform.localEulerAngles = new Vector3(90, 0, 0);
+        gridCanvas.transform.position = transform.position;
+        RectTransform rectTransform = gridCanvas.GetComponent<RectTransform>();
+        rectTransform.pivot = new Vector2(0, 0);
+
+        //Scale canvas to only cover the chunk
+        rectTransform.sizeDelta = new Vector2(size * HexMetrics.innerRadius * 2, (size - 1) * HexMetrics.outerRadius * 1.5f);
     }
 
     CellStack CreateCellStack(int x, int z, int height) {
@@ -100,6 +110,7 @@ public class TerrainChunk : MonoBehaviour {
             label.rectTransform.SetParent(gridCanvas.transform, false);
             label.rectTransform.anchoredPosition3D = new Vector3(position.x, position.z, -position.y);
             label.text = cellStack.coordinates.ToStringOnSeparateLines();
+            //label.text = "" + cellStack.Count();
         }
 
         return cellStack;

@@ -12,7 +12,6 @@ public class HexTerrain : MonoBehaviour {
     public int chunkColumns = 2;
     public int maxHeight = 6;
     public int waterLevel = 2;
-    public bool showCoordinates = true;
 
     public Text cellLabelPrefab;
 
