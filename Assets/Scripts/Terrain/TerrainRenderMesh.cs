@@ -112,7 +112,7 @@ public class TerrainRenderMesh : MonoBehaviour {
         center += new Vector3(0, transform.localPosition.y, 0);
         center += stackHeight * HexMetrics.heightVector;
 
-        HexCell topCell = stack.Peek();
+        CellType topCell = stack.Peek();
         Material topMaterial = getTopMaterial(topCell);
         List<int> topMaterialSubmesh = getSubmesh(topMaterial);
 
@@ -153,7 +153,7 @@ public class TerrainRenderMesh : MonoBehaviour {
 
             for (int elevation = stackHeight; elevation > neighborHeight; elevation--) {
 
-                HexCell currentCell = stack.PeekAt(elevation - 1);
+                CellType currentCell = stack.PeekAt(elevation - 1);
                 Material sideMaterial = getSideMaterial(currentCell);
                 List<int> sideMaterialSubmesh = getSubmesh(sideMaterial);
 
@@ -214,19 +214,18 @@ public class TerrainRenderMesh : MonoBehaviour {
         return submesh;
     }
 
-    private Material getTopMaterial(HexCell cell) {
-        Type cellType = cell.GetType();
+    private Material getTopMaterial(CellType cell) {
 
-        if(cellType.Name == "BedrockCell") {
+        if(cell == CellType.Bedrock) {
             return bedrockTop;
         }
-        else if (cellType.Name == "WaterCell") {
+        else if (cell == CellType.Water) {
             return waterTop;
         }
-        else if(cellType.Name == "DirtCell") {
+        else if(cell == CellType.Dirt) {
             return dirtTop;
         }
-        else if(cellType.Name == "GrassCell") {
+        else if(cell == CellType.Grass) {
             return grassTop;
         }
         else {
@@ -234,18 +233,18 @@ public class TerrainRenderMesh : MonoBehaviour {
         }
     }
 
-    private Material getSideMaterial(HexCell cell) {
-        Type cellType = cell.GetType();
-        if (cellType.Name == "BedrockCell") {
+    private Material getSideMaterial(CellType cell) {
+        
+        if (cell == CellType.Bedrock) {
             return bedrockSide;
         }
-        else if (cellType.Name == "WaterCell") {
+        else if (cell == CellType.Water) {
             return waterSide;
         }
-        else if (cellType.Name == "DirtCell") {
+        else if (cell == CellType.Dirt) {
             return dirtSide;
         }
-        else if (cellType.Name == "GrassCell") {
+        else if (cell == CellType.Grass) {
             return grassSide;
         }
         else {

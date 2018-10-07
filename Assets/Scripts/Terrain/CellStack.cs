@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CellStack : ScriptableObject {
 
-    List<HexCell> cells = new List<HexCell>();
+    List<CellType> cells = new List<CellType>();
     public HexCoordinates coordinates;
 
     public bool initialized = false;
@@ -18,27 +18,25 @@ public class CellStack : ScriptableObject {
         return cells.Count;
     }
 
-    public HexCell Peek() {
+    public CellType Peek() {
         return cells[Count() - 1];
     }
 
-    public HexCell Pop() {
-        HexCell top = Peek();
+    public CellType Pop() {
+        CellType top = Peek();
         cells.RemoveAt(Count() - 1);
         return top;
     }
 
-    public void Push(HexCell cell) {
-        cell.cellStack = this;
-        cell.elevation = Count();
+    public void Push(CellType cell) {
         cells.Add(cell);
     }
 
-    public HexCell PeekAt(int index) {
+    public CellType PeekAt(int index) {
         return cells[index];
     }
 
     public bool CanPop() {
-        return Count() > 0 && !(Peek().GetType() == typeof(BedrockCell));
+        return Count() > 0 && Peek() != CellType.Bedrock;
     }
 }

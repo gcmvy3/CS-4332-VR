@@ -9,14 +9,14 @@ public class Terraform : MonoBehaviour {
     public GameObject ghostCellPrefab;
     public Material ghostMaterial;
 
-    HexCell cellType;
+    CellType cellType;
 
     HexTerrain terrain;
 
     // Use this for initialization
     void Start() {
         terrain = gameObject.GetComponent<HexTerrain>();
-        cellType = ScriptableObject.CreateInstance<DirtCell>();
+        cellType = CellType.Dirt;
         initGhostCell();
     }
 
@@ -47,7 +47,7 @@ public class Terraform : MonoBehaviour {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
         TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
-        chunk.AddCell(Instantiate<HexCell>(cellType), coordinates);
+        chunk.AddCell(cellType, coordinates);
     }
 
     public bool CanRemoveCell(Vector3 position) {

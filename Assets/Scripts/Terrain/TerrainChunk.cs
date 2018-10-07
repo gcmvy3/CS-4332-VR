@@ -81,22 +81,21 @@ public class TerrainChunk : MonoBehaviour {
         CellStack cellStack = ScriptableObject.CreateInstance<CellStack>();
         cellStack.coordinates = HexCoordinates.FromOffsetCoordinates(x + (int)offsetOrigin.x, z + (int)offsetOrigin.y);
 
-        BedrockCell bedrockCell = ScriptableObject.CreateInstance<BedrockCell>();
-        cellStack.Push(bedrockCell);
+        cellStack.Push(CellType.Bedrock);
 
         int numWaterTiles = terrain.waterLevel - height;
 
         for (int i = 0; i < Math.Max(height, terrain.waterLevel); i++) {
-            HexCell newCell;
+            CellType newCell;
 
             if (numWaterTiles > 0 && i >= height) {
-                newCell = ScriptableObject.CreateInstance<WaterCell>();
+                newCell = CellType.Water;
             }
             else if (numWaterTiles <= 0 && i == height - 1) {
-                newCell = ScriptableObject.CreateInstance<GrassCell>();
+                newCell = CellType.Grass;
             }
             else {
-                newCell = ScriptableObject.CreateInstance<DirtCell>();
+                newCell = CellType.Dirt;
             }
 
             cellStack.Push(newCell);
@@ -147,7 +146,7 @@ public class TerrainChunk : MonoBehaviour {
         return stack;
     }
 
-    public void AddCell(HexCell cell, HexCoordinates coords) {
+    public void AddCell(CellType cell, HexCoordinates coords) {
         CellStack stack = GetCellStackFromWorldCoords(coords);
         stack.Push(cell);
         GenerateMeshes();
