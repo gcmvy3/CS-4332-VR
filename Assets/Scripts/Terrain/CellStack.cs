@@ -2,10 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellStack : MonoBehaviour {
+public class CellStack : ScriptableObject {
 
     List<HexCell> cells = new List<HexCell>();
     public HexCoordinates coordinates;
+
+    public bool initialized = false;
+
+    public void init(TerrainChunk chunk, HexCoordinates coords) {
+        coordinates = coords;
+        initialized = true;
+    }
 
     public int Count() {
         return cells.Count;

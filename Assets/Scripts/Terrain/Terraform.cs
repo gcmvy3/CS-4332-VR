@@ -1,4 +1,5 @@
 ﻿using NewtonVR;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +11,11 @@ public class Terraform : MonoBehaviour {
 
     HexCell cellType;
 
-    HexGrid grid;
+    HexTerrain terrain;
 
     // Use this for initialization
     void Start() {
-        grid = GetComponentInParent<HexGrid>();
+        terrain = gameObject.GetComponent<HexTerrain>();
         cellType = ScriptableObject.CreateInstance<DirtCell>();
         initGhostCell();
     }
@@ -26,33 +27,41 @@ public class Terraform : MonoBehaviour {
 
     public void TouchCell(Vector3 position) {
         position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
 
-        CellStack stack = grid.GetCellStack(coordinates);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
 
-        Vector3 ghostPosition = stack.coordinates.ToGlobalPosition(grid) + HexMetrics.heightVector * stack.Count();
-        ghostPosition += HexMetrics.heightVector / 2;
-        ghostCellPrefab.transform.localPosition = ghostPosition;
+        try {
+            CellStack stack = chunk.GetCellStackFromWorldCoords(coordinates);
+
+            Vector3 ghostPosition = stack.coordinates.ToWorldPosition(chunk) + HexMetrics.heightVector * stack.Count();
+            ghostPosition += HexMetrics.heightVector / 2;
+            ghostCellPrefab.transform.localPosition = ghostPosition;
+        }
+        catch (NullReferenceException e) {
+            Debug.LogWarning("Trying to access null cellstack");
+        }
     }
 
     public void PlaceCell(Vector3 position) {
         position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-
-        grid.AddCell(Instantiate<HexCell>(cellType), coordinates);
+        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
+        chunk.AddCell(Instantiate<HexCell>(cellType), coordinates);
     }
 
     public bool CanRemoveCell(Vector3 position) {
         position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-        return grid.CanRemoveCell(coordinates);
+        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
+        return chunk.CanRemoveCell(coordinates);
     }
 
     public void RemoveCell(Vector3 position) {
         position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-
-        grid.RemoveCell(coordinates);
+        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
+        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
+        chunk.RemoveCell(coordinates);
     }
 
     private void initGhostCell() {
@@ -74,7 +83,7 @@ public class Terraform : MonoBehaviour {
         ghostCellPrefab.transform.localScale = scale;
 
         //Set the initial position of the ghost cell
-        ghostCellPrefab.transform.position = grid.transform.position;
+        ghostCellPrefab.transform.position = terrain.transform.position;
 
         //Apply the ghost material to the ghost cell
         MeshRenderer ghostRenderer = ghostCellPrefab.GetComponent<MeshRenderer>();

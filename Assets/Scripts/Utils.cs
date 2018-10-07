@@ -23,4 +23,24 @@ public class Utils : MonoBehaviour {
 
         return noiseMap;
     }
+
+    public static float[,] Get2DArraySubset(float[,] original, Vector2 start, Vector2 end) {
+        int startRow = (int)start.y;
+        int startCol = (int)start.x;
+        int endRow = (int)end.y;
+        int endCol = (int)end.x;
+
+        int numRows = endRow - startRow;
+        int numCols = endCol - startCol;
+
+        float[,] subset = new float[numCols, numRows];
+
+        for (int z = startRow, b = 0; z < endRow; z++, b++) {
+            for (int x = startCol, a = 0; x < endCol; x++, a++) {
+                subset[a, b] = original[x, z];
+            }
+        }
+
+        return subset;
+    }
 }

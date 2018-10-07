@@ -4,13 +4,15 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - missingMaterial: {fileID: 2100000, guid: acc7c4a11c6132b45841a8366b4a4706, type: 2}
-  - bedrockTop: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
-  - dirtTop: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
-  - grassTop: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
-  - bedrockSide: {fileID: 2100000, guid: ccfe3be5fc64b5c4d980fa998457c67f, type: 2}
-  - dirtSide: {fileID: 2100000, guid: c5997a8517736f54381d385e523f7d20, type: 2}
-  - grassSide: {fileID: 2100000, guid: 10439b53cf9f2624eb45247590fdc683, type: 2}
+  - missingMaterial: {fileID: 2100000, guid: 2af22b2f9a3374f49a977ff306cbb7b2, type: 2}
+  - bedrockTop: {fileID: 2100000, guid: 8e02d94a1cd458d4992ccd1dd4056a60, type: 2}
+  - waterTop: {fileID: 2100000, guid: c8d31ac7740f5504a84607455cd92227, type: 2}
+  - dirtTop: {fileID: 2100000, guid: 1fd7518ca06323447afc2715da6717bd, type: 2}
+  - grassTop: {fileID: 2100000, guid: 2b840833b26a1ce4ebe7ce63643b7e03, type: 2}
+  - bedrockSide: {fileID: 2100000, guid: 8e02d94a1cd458d4992ccd1dd4056a60, type: 2}
+  - waterSide: {fileID: 2100000, guid: c8d31ac7740f5504a84607455cd92227, type: 2}
+  - dirtSide: {fileID: 2100000, guid: 1fd7518ca06323447afc2715da6717bd, type: 2}
+  - grassSide: {fileID: 2100000, guid: 2b840833b26a1ce4ebe7ce63643b7e03, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent (typeof(HexGrid))]
 public class TerrainCollisionMesh : MonoBehaviour {
 
     GameObject collisionObject;
-    HexGrid hexGrid;
+    TerrainChunk chunk;
     Mesh terrainMesh;
     List<Vector3> vertices;
     List<int> triangles;
@@ -17,8 +16,11 @@ public class TerrainCollisionMesh : MonoBehaviour {
     NavMeshSurface navMeshSurface;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 
+	}
+	
+    public void Init() {
         collisionObject = new GameObject();
         collisionObject.name = "Collision Mesh";
         collisionObject.transform.SetParent(gameObject.transform);
@@ -27,7 +29,7 @@ public class TerrainCollisionMesh : MonoBehaviour {
         terrainMesh = new Mesh();
         terrainMesh.name = "TerrainCollisionMesh";
 
-        hexGrid = GetComponent<HexGrid>();
+        chunk = GetComponent<TerrainChunk>();
         meshFilter = collisionObject.AddComponent<MeshFilter>();
         meshCollider = collisionObject.AddComponent<MeshCollider>();
         meshRenderer = collisionObject.AddComponent<MeshRenderer>();
@@ -38,8 +40,8 @@ public class TerrainCollisionMesh : MonoBehaviour {
         triangles = new List<int>();
 
         navMeshSurface = collisionObject.AddComponent<NavMeshSurface>();
-	}
-	
+    }
+
 	// Update is called once per frame
 	void Update () {
 		
@@ -50,15 +52,15 @@ public class TerrainCollisionMesh : MonoBehaviour {
         vertices.Clear();
         triangles.Clear();
 
-        int rows = hexGrid.rows;
-        int columns = hexGrid.columns;
+        int rows = chunk.size;
+        int columns = chunk.size;
 
         for (int z = 0, i = 0; z < rows; z++) {
             for (int x = 0; x < columns; x++) {
-                CellStack stack = hexGrid.GetCellStack(new Vector2(x, z));
+                CellStack stack = chunk.GetCellStackFromChunkOffset(new Vector2(x, z));
 
                 if (stack != null) {
-                    GenerateStackMesh(stack);
+                    GenerateStackMesh(x, z, stack);
                 }
             }
         }
@@ -73,13 +75,17 @@ public class TerrainCollisionMesh : MonoBehaviour {
         navMeshSurface.BuildNavMesh();
     }
     
-    void GenerateStackMesh(CellStack stack) {
+    void GenerateStackMesh(int x, int z, CellStack stack) {
 
         int stackHeight = stack.Count();
-        HexCell topCell = stack.Peek();
 
-        Vector3 center = stack.coordinates.ToLocalPosition();
+        Vector2 worldOffset = new Vector2(x + chunk.offsetOrigin.x, z + chunk.offsetOrigin.y);
+
+        Vector3 center = HexCoordinates.FromOffsetCoordinates(x, z).ToChunkPosition();
+        center += new Vector3(0, transform.localPosition.y, 0);
         center += stackHeight * HexMetrics.heightVector;
+
+        HexCell top = stack.Peek();
 
         HexCoordinates[] neighbors = stack.coordinates.GetNeighbors();
 
@@ -92,7 +98,7 @@ public class TerrainCollisionMesh : MonoBehaviour {
             );
 
             //Generates the vertical part of the terrain (sides of the stack)
-            CellStack neighbor = hexGrid.GetCellStack(neighbors[i]);
+            CellStack neighbor = chunk.GetCellStackFromWorldCoords(neighbors[i]);
 
             //If we have a neighbor in this direction, check its height
             //If it is taller than us, ignore it (it will create the vertical wall)
