@@ -89,10 +89,12 @@ MonoBehaviour:
   waterTop: {fileID: 2100000, guid: c8d31ac7740f5504a84607455cd92227, type: 2}
   dirtTop: {fileID: 2100000, guid: 1fd7518ca06323447afc2715da6717bd, type: 2}
   grassTop: {fileID: 2100000, guid: 2b840833b26a1ce4ebe7ce63643b7e03, type: 2}
+  sandTop: {fileID: 2100000, guid: 589e2d09a0ffdaa408b7fcd0bcc86ced, type: 2}
   bedrockSide: {fileID: 2100000, guid: 8e02d94a1cd458d4992ccd1dd4056a60, type: 2}
   waterSide: {fileID: 2100000, guid: c8d31ac7740f5504a84607455cd92227, type: 2}
   dirtSide: {fileID: 2100000, guid: 1fd7518ca06323447afc2715da6717bd, type: 2}
   grassSide: {fileID: 2100000, guid: 2b840833b26a1ce4ebe7ce63643b7e03, type: 2}
+  sandSide: {fileID: 2100000, guid: 589e2d09a0ffdaa408b7fcd0bcc86ced, type: 2}
 --- !u!114 &114019281232637116
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -119,9 +121,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainScale: 12
-  chunkSize: 8
-  chunkRows: 2
-  chunkColumns: 2
+  chunkSize: 16
+  chunkRows: 6
+  chunkColumns: 6
   maxHeight: 12
   waterLevel: 5
   cellLabelPrefab: {fileID: 114792996082348872, guid: f0e5574ff79e31245a489893a2a868a8,

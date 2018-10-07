@@ -58,6 +58,13 @@ public class TerrainChunk : MonoBehaviour {
             }
         }
 
+        for (int z = 0, i = 0; z < size; z++) {
+            for (int x = 0; x < size; x++) {
+
+                FinalizeStack(cellStacks[x, z]);
+            }
+        }
+
         GenerateMeshes();
 
         initialized = true;
@@ -85,6 +92,7 @@ public class TerrainChunk : MonoBehaviour {
 
         int numWaterTiles = terrain.waterLevel - height;
 
+        // Generate terrian based on stack height
         for (int i = 0; i < Math.Max(height, terrain.waterLevel); i++) {
             CellType newCell;
 
@@ -109,10 +117,36 @@ public class TerrainChunk : MonoBehaviour {
             label.rectTransform.SetParent(gridCanvas.transform, false);
             label.rectTransform.anchoredPosition3D = new Vector3(position.x, position.z, -position.y);
             label.text = cellStack.coordinates.ToStringOnSeparateLines();
-            //label.text = "" + cellStack.Count();
         }
 
         return cellStack;
+    }
+
+    // This modifies terrain based on neighbor stacks
+    // Thus it should only be called after all cell stacks are generated
+    public void FinalizeStack(CellStack cellStack) {
+
+        HexCoordinates[] neighbors = cellStack.coordinates.GetNeighbors();
+        for (int i = 0; i < 6; i++) {
+            CellStack neighbor = GetCellStackFromWorldCoords(neighbors[i]);
+
+            // The neighbor cell stack might not be in this chunk
+            if(neighbor == null) {
+                TerrainChunk neighborChunk = terrain.GetChunkFromWorldCoords(neighbors[i]);
+                if(neighborChunk != null) {
+                    neighbor = neighborChunk.GetCellStackFromWorldCoords(neighbors[i]);
+                }
+            }
+
+            if (neighbor != null) {
+                if(cellStack.Peek() != CellType.Water) {
+                    if (cellStack.Count() == terrain.waterLevel + 1 && neighbor.Peek() == CellType.Water) {
+                        cellStack.Pop();
+                        cellStack.Push(CellType.Sand);
+                    }
+                }
+             }
+        }
     }
 
     public void GenerateMeshes() {
@@ -148,6 +182,14 @@ public class TerrainChunk : MonoBehaviour {
 
     public void AddCell(CellType cell, HexCoordinates coords) {
         CellStack stack = GetCellStackFromWorldCoords(coords);
+
+        // Grass cells can only be on top of the grass
+        // So if something is placed on top of grass, turn the grass into dirt
+        if(stack.Peek() == CellType.Grass) {
+            stack.Pop();
+            stack.Push(CellType.Dirt);
+        }
+
         stack.Push(cell);
         GenerateMeshes();
     }
