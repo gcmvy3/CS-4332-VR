@@ -6,9 +6,8 @@ using UnityEngine;
 
 public class Terraform : MonoBehaviour {
 
-    public GameObject ghostCellPrefab;
     public Material ghostMaterial;
-
+    GameObject ghostCellPrefab;
     CellType cellType;
 
     HexTerrain terrain;
@@ -65,22 +64,11 @@ public class Terraform : MonoBehaviour {
     }
 
     private void initGhostCell() {
-        ghostCellPrefab = GameObject.Instantiate(ghostCellPrefab);
+        ghostCellPrefab = GameObject.Instantiate(GameObject.Find("Cloneables/HexCellPrefab"));
 
         //Scale the cell so it is the correct size
-        float targetSize = HexMetrics.outerRadius * 2;
-        float currentSize = ghostCellPrefab.GetComponent<MeshRenderer>().bounds.size.z;
-
-        float targetHeight = HexMetrics.height;
-        float currentHeight = ghostCellPrefab.GetComponent<MeshRenderer>().bounds.size.y;
-
-        Vector3 scale = ghostCellPrefab.transform.localScale;
-
-        scale.z = targetSize * scale.z / currentSize;
-        scale.x = scale.z;
-        scale.y = targetHeight * scale.y / currentHeight;
-
-        ghostCellPrefab.transform.localScale = scale;
+        Vector3 targetSize = new Vector3(HexMetrics.innerRadius * 2, HexMetrics.height, HexMetrics.outerRadius * 2);
+        GameUtils.ScaleGameObjectToSize(ghostCellPrefab, targetSize);
 
         //Set the initial position of the ghost cell
         ghostCellPrefab.transform.position = terrain.transform.position;

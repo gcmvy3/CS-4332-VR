@@ -121,13 +121,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainScale: 12
-  chunkSize: 16
+  chunkSize: 8
   chunkRows: 6
   chunkColumns: 6
   maxHeight: 12
   waterLevel: 5
+  visibleChunkRows: 3
+  visibleChunkColumns: 3
+  treeChance: 0.5
   cellLabelPrefab: {fileID: 114792996082348872, guid: f0e5574ff79e31245a489893a2a868a8,
     type: 2}
+  pedestal: {fileID: 0}
 --- !u!114 &114306586472704912
 MonoBehaviour:
   m_ObjectHideFlags: 1

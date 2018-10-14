@@ -7,5 +7,6 @@ public enum CellType{
     Dirt,
     Grass,
     Water,
-    Sand
+    Sand,
+    Trees
 }

@@ -109,6 +109,18 @@ public class TerrainChunk : MonoBehaviour {
             cellStack.Push(newCell);
         }
 
+        // TODO figure out how to do trees
+        /*
+        // Randomly add trees on top of grass cells
+        if(cellStack.Peek() == CellType.Grass) {
+            int range = (int)(1 / terrain.treeChance);
+            int random = (int)UnityEngine.Random.Range(0, range);
+            if(random == 1) {
+                cellStack.Push(CellType.Trees);
+            }
+        }
+        */
+
         if (showCoordinates && gridCanvas != null) {
             Vector3 position = cellStack.coordinates.ToChunkPosition();
             position += HexMetrics.heightVector * (cellStack.Count() + 1);
@@ -183,9 +195,9 @@ public class TerrainChunk : MonoBehaviour {
     public void AddCell(CellType cell, HexCoordinates coords) {
         CellStack stack = GetCellStackFromWorldCoords(coords);
 
-        // Grass cells can only be on top of the grass
-        // So if something is placed on top of grass, turn the grass into dirt
-        if(stack.Peek() == CellType.Grass) {
+        // Only trees can be placed on top of grass
+        // So if something else is placed on top of grass, turn the grass into dirt
+        if(cell != CellType.Trees && stack.Peek() == CellType.Grass) {
             stack.Pop();
             stack.Push(CellType.Dirt);
         }
@@ -203,5 +215,10 @@ public class TerrainChunk : MonoBehaviour {
         CellStack stack = GetCellStackFromWorldCoords(coordinates);
         stack.Pop();
         GenerateMeshes();
+    }
+
+    public void setVisible(bool visible) {
+        renderMesh.enabled = visible;
+        collisionMesh.enabled = visible;
     }
 }

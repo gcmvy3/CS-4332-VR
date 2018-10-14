@@ -264,6 +264,7 @@
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRScreenFade.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRTrackedRemote.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRWaitCursor.cs" />
+    <Compile Include="Assets\Scripts\GameUtils.cs" />
     <Compile Include="Assets\Scripts\HandMenu.cs" />
     <Compile Include="Assets\Scripts\InputController.cs" />
     <Compile Include="Assets\Scripts\Terrain\CellStack.cs" />
@@ -276,7 +277,6 @@
     <Compile Include="Assets\Scripts\Terrain\TerrainChunk.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerrainCollisionMesh.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerrainRenderMesh.cs" />
-    <Compile Include="Assets\Scripts\Utils.cs" />
     <None Include="Assets\3rd Party\SteamVR\Resources\SteamVR_Fade.shader" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRUnlitTransparent.shader" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRChromaKey.cginc" />
