@@ -13,14 +13,14 @@ public class HexTerrain : MonoBehaviour {
     public int maxHeight = 6;
     public int waterLevel = 2;
 
-    public int pedestalHeight = 1;
+    public int pedestalHeight = 5;
+    public int pedestalRimSize = 10;
 
     public float treeChance = 0.5f;
 
     public Text cellLabelPrefab;
-    
-    public GameObject pedestalTop;
-    public GameObject pedestalBase;
+
+    public GameObject pedestal;
 
     TerrainChunk chunkTemplate;
     TerrainChunk[,] chunks;
@@ -39,22 +39,16 @@ public class HexTerrain : MonoBehaviour {
     }
 
     private void InitPedestal() {
-        pedestalTop = GameObject.Instantiate(GameObject.Find("Cloneables/PedestalTop"));
-        pedestalBase = GameObject.Instantiate(GameObject.Find("Cloneables/PedestalBase"));
+        pedestal = GameObject.Instantiate(GameObject.Find("Cloneables/Pedestal"));
 
-        float pedestalWidth = chunkSize * chunkColumns * (HexMetrics.innerRadius * 2) + HexMetrics.innerRadius;
-        float pedestalDepth = chunkSize * chunkRows * HexMetrics.outerRadius * 1.5f;
+        float pedestalWidth = chunkSize * chunkColumns * (HexMetrics.innerRadius * 2) + HexMetrics.innerRadius + pedestalRimSize * 2;
+        float pedestalDepth = chunkSize * chunkRows * HexMetrics.outerRadius * 1.5f + pedestalRimSize * 2;
 
-        GameUtils.ScaleGameObjectToSize(pedestalTop, new Vector3(pedestalWidth, 1, pedestalDepth));
+        GameUtils.ScaleGameObjectToSize(pedestal, new Vector3(pedestalWidth, pedestalHeight, pedestalDepth));
 
-        float pedestalX = transform.position.x + pedestalWidth / 2 - HexMetrics.innerRadius;
-        float pedestalZ = transform.position.z + pedestalDepth / 2 - HexMetrics.outerRadius; 
-        pedestalTop.transform.position = new Vector3(pedestalX, transform.position.y - pedestalHeight / 2, pedestalZ);
-
-        pedestalBase.transform.localScale = pedestalTop.transform.localScale;
-        pedestalBase.transform.localScale = new Vector3(pedestalBase.transform.localScale.x, pedestalHeight, pedestalBase.transform.localScale.z);
-        pedestalBase.transform.position = pedestalTop.transform.position;
-        pedestalBase.transform.Translate(new Vector3(0, -pedestalHeight, 0));
+        float pedestalX = transform.position.x + pedestalWidth / 2 - HexMetrics.innerRadius - pedestalRimSize;
+        float pedestalZ = transform.position.z + pedestalDepth / 2 - HexMetrics.outerRadius - pedestalRimSize; 
+        pedestal.transform.position = new Vector3(pedestalX, transform.position.y - pedestalHeight, pedestalZ);
     }
 
     private void GenerateProceduralMap() {
