@@ -20,6 +20,8 @@ public class TerrainChunk : MonoBehaviour {
 
     public Vector2 offsetOrigin;
 
+    List<GameObject> trees;
+
     // Use this for initialization
     void Start() {
 
@@ -87,7 +89,7 @@ public class TerrainChunk : MonoBehaviour {
 
         CellStack cellStack = ScriptableObject.CreateInstance<CellStack>();
         cellStack.coordinates = HexCoordinates.FromOffsetCoordinates(x + (int)offsetOrigin.x, z + (int)offsetOrigin.y);
-
+        cellStack.indexWithinChunk = new Vector2(x % size, z % size);
         cellStack.Push(CellType.Bedrock);
 
         int numWaterTiles = terrain.waterLevel - height;
@@ -108,18 +110,6 @@ public class TerrainChunk : MonoBehaviour {
 
             cellStack.Push(newCell);
         }
-
-        // TODO figure out how to do trees
-        /*
-        // Randomly add trees on top of grass cells
-        if(cellStack.Peek() == CellType.Grass) {
-            int range = (int)(1 / terrain.treeChance);
-            int random = (int)UnityEngine.Random.Range(0, range);
-            if(random == 1) {
-                cellStack.Push(CellType.Trees);
-            }
-        }
-        */
 
         if (showCoordinates && gridCanvas != null) {
             Vector3 position = cellStack.coordinates.ToChunkPosition();
@@ -158,6 +148,23 @@ public class TerrainChunk : MonoBehaviour {
                     }
                 }
              }
+        }
+
+        trees = new List<GameObject>();
+        if(cellStack.Peek() == CellType.Grass) {
+            bool placeTree = (UnityEngine.Random.value > terrain.treeChance);
+            if(placeTree) {
+                Vector2 offset = cellStack.indexWithinChunk;
+
+                Vector3 treePos = transform.position + new Vector3(offset.x * HexMetrics.innerRadius * 2 + offset.y % 2 * HexMetrics.innerRadius,
+                                                                    transform.localPosition.y + HexMetrics.height * cellStack.Count(),
+                                                                    offset.y * HexMetrics.outerRadius * 1.5f);
+
+                GameObject tree = GameObject.Instantiate(GameObject.Find("Cloneables/Tree"));
+                tree.transform.SetParent(transform);
+                tree.transform.position = treePos;
+                trees.Add(tree);
+            }
         }
     }
 

@@ -6,6 +6,7 @@ public class CellStack : ScriptableObject {
 
     List<CellType> cells = new List<CellType>();
     public HexCoordinates coordinates;
+    public Vector2 indexWithinChunk;
 
     public bool initialized = false;
 

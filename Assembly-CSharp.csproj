@@ -269,6 +269,7 @@
     <Compile Include="Assets\Scripts\InputController.cs" />
     <Compile Include="Assets\Scripts\Terrain\CellStack.cs" />
     <Compile Include="Assets\Scripts\Terrain\CellTypes.cs" />
+    <Compile Include="Assets\Scripts\Terrain\Environment.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexCoordinates.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexCoordinatesDrawer.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexMetrics.cs" />

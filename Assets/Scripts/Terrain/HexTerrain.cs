@@ -13,14 +13,9 @@ public class HexTerrain : MonoBehaviour {
     public int maxHeight = 6;
     public int waterLevel = 2;
 
-    public int pedestalHeight = 5;
-    public int pedestalRimSize = 10;
-
     public float treeChance = 0.5f;
 
     public Text cellLabelPrefab;
-
-    public GameObject pedestal;
 
     TerrainChunk chunkTemplate;
     TerrainChunk[,] chunks;
@@ -34,21 +29,7 @@ public class HexTerrain : MonoBehaviour {
         Vector3 centerOffset = new Vector3(chunkSize * HexMetrics.innerRadius * chunkColumns, 0, 0);
         transform.position -= centerOffset;
 
-        InitPedestal();
         GenerateProceduralMap();
-    }
-
-    private void InitPedestal() {
-        pedestal = GameObject.Instantiate(GameObject.Find("Cloneables/Pedestal"));
-
-        float pedestalWidth = chunkSize * chunkColumns * (HexMetrics.innerRadius * 2) + HexMetrics.innerRadius + pedestalRimSize * 2;
-        float pedestalDepth = chunkSize * chunkRows * HexMetrics.outerRadius * 1.5f + pedestalRimSize * 2;
-
-        GameUtils.ScaleGameObjectToSize(pedestal, new Vector3(pedestalWidth, pedestalHeight, pedestalDepth));
-
-        float pedestalX = transform.position.x + pedestalWidth / 2 - HexMetrics.innerRadius - pedestalRimSize;
-        float pedestalZ = transform.position.z + pedestalDepth / 2 - HexMetrics.outerRadius - pedestalRimSize; 
-        pedestal.transform.position = new Vector3(pedestalX, transform.position.y - pedestalHeight, pedestalZ);
     }
 
     private void GenerateProceduralMap() {
