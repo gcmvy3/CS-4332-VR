@@ -5,8 +5,9 @@ using UnityEngine;
 public class Environment : MonoBehaviour {
 
     HexTerrain terrain;
-    GameObject pedestal;
-    GameObject room;
+    public GameObject pedestal;
+    public GameObject room;
+    public GameObject floor;
 
     public int pedestalHeight = 5;
     public int pedestalRimSize = 10;
@@ -20,7 +21,7 @@ public class Environment : MonoBehaviour {
         GameObject player = GameObject.Find("NVRPlayer");
         if (player)
         {
-            transform.position = new Vector3(transform.position.x, player.transform.position.y + pedestalHeight, transform.position.z);
+            transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
         }
     }
 	
@@ -31,7 +32,7 @@ public class Environment : MonoBehaviour {
 
     private void InitPedestal() {
         terrain = GameObject.FindObjectOfType<HexTerrain>();
-        pedestal = GameObject.Instantiate(GameObject.Find("Cloneables/Pedestal"));
+        pedestal = GameObject.Instantiate(pedestal);
 
         float pedestalWidth = terrain.chunkSize * terrain.chunkColumns * (HexMetrics.innerRadius * 2) + HexMetrics.innerRadius + pedestalRimSize * 2;
         float pedestalDepth = terrain.chunkSize * terrain.chunkRows * HexMetrics.outerRadius * 1.5f + pedestalRimSize * 2;
@@ -41,12 +42,19 @@ public class Environment : MonoBehaviour {
         float pedestalX = terrain.transform.position.x + pedestalWidth / 2 - HexMetrics.innerRadius - pedestalRimSize;
         float pedestalZ = terrain.transform.position.z + pedestalDepth / 2 - HexMetrics.outerRadius - pedestalRimSize;
         pedestal.transform.position = new Vector3(pedestalX, terrain.transform.position.y - pedestalHeight, pedestalZ);
+        pedestal.transform.parent = transform;
     }
 
     private void InitRoom()
     {
-        room = GameObject.Instantiate(GameObject.Find("Cloneables/Room"));
+        room = GameObject.Instantiate(room);
         room.transform.localScale = pedestal.transform.localScale;
         room.transform.position = pedestal.transform.position;
+        room.transform.parent = transform;
+
+        floor = GameObject.Instantiate(floor);
+        floor.transform.localScale = pedestal.transform.localScale;
+        floor.transform.position = pedestal.transform.position;
+        floor.transform.parent = transform;
     }
 }

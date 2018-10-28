@@ -216,6 +216,8 @@
     <Compile Include="Assets\3rd Party\SteamVR\Scripts\SteamVR_TrackedObject.cs" />
     <Compile Include="Assets\3rd Party\SteamVR\Scripts\SteamVR_UpdatePoses.cs" />
     <Compile Include="Assets\3rd Party\SteamVR\Scripts\SteamVR_Utils.cs" />
+    <Compile Include="Assets\3rd Party\VRTeleporter\Sample\SampleVRTeleporterController.cs" />
+    <Compile Include="Assets\3rd Party\VRTeleporter\VRTeleporter.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Composition\OVRCameraComposition.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Composition\OVRComposition.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Composition\OVRCompositionUtil.cs" />

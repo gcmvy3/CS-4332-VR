@@ -21,14 +21,30 @@ public class InputController : MonoBehaviour {
     public bool terraformEnabled = true;
     Terraform terraform;
 
+    public VRTeleporter leftTeleporter;
+    public VRTeleporter rightTeleporter;
+    private VRTeleporter teleporter = null;
+
     Vector3 pointerOrigin;
     Vector3 pointerTarget;
+
+    public float rotateThreshold = 0.8f;
+    public float rotationAmount = 20;
+
+    private bool justRotated = false;
     
     // Use this for initialization
     void Start () {
         player = GetComponent<NVRPlayer>();
         primaryHand = player.RightHand;
         secondaryHand = player.LeftHand;
+
+        if(primaryHand = player.RightHand) {
+            teleporter = leftTeleporter;
+        }
+        else {
+            teleporter = rightTeleporter;
+        }
 
         handMenu = new GameObject("HandMenuPrefab");
         handMenu.transform.SetParent(secondaryHand.transform);
@@ -41,6 +57,22 @@ public class InputController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        //Allow player to turn rapidly with secondary joystick
+        NVRButtonInputs joystickValue;
+        if(secondaryHand.Inputs.TryGetValue(NVRButtons.Axis0, out joystickValue)) {
+            float joystickX = joystickValue.Axis.x;
+            if(!justRotated && Mathf.Abs(joystickX) >= rotateThreshold) {
+
+                float rotation = rotationAmount * Mathf.Sign(joystickX);
+
+                player.transform.Rotate(new Vector3(0, rotation, 0));
+                justRotated = true;
+            }
+            else if(justRotated && Mathf.Abs(joystickX) < rotateThreshold) {
+                justRotated = false;
+            }
+        }
+
         //Allow "pulling" movement by gripping with secondary hand
         if(secondaryHand.HoldButtonDown) {
             //Set anchor
@@ -50,6 +82,18 @@ public class InputController : MonoBehaviour {
             //Move player
             Vector3 delta = secondaryHand.transform.position - prevHandPosition;
             player.transform.Translate(-delta);
+        }
+        else {
+            //Allow player to teleport with secondary hand
+            if (secondaryHand.UseButtonDown) {
+                teleporter.ToggleDisplay(true);
+            }
+            else if(secondaryHand.UseButtonUp) {
+                float playerHeight = player.transform.position.y;
+                teleporter.ToggleDisplay(false);
+                teleporter.Teleport();
+                player.transform.position = new Vector3(player.transform.position.x, playerHeight, player.transform.position.z);
+            }
         }
 
         //TODO maybe also have a button to enable pointer
