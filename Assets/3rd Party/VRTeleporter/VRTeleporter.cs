@@ -118,6 +118,7 @@ public class VRTeleporter : MonoBehaviour
         {
             positionMarker.transform.position = groundPos + lastNormal * 0.1f;
             positionMarker.transform.LookAt(groundPos);
+            positionMarker.transform.rotation = Quaternion.Euler(90, 0, 0);
         }
 
         // Update Line Renderer

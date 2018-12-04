@@ -60,6 +60,8 @@ ModelImporter:
     2100004: Center
     2100006: Trunk
     2100008: Leaves
+    2100010: Top
+    2100012: Sides
     2300000: //RootNode
     2300002: Cylinder
     2300004: Cylinder_001

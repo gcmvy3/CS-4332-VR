@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
 using System;
+using CielaSpike;
 
 public class TerrainRenderMesh : MonoBehaviour {
 
@@ -66,7 +67,10 @@ public class TerrainRenderMesh : MonoBehaviour {
     }
 
     public void Generate() {
-        terrainRenderMesh.Clear();
+        this.StartCoroutineAsync(this.GenerationCoroutine());
+    }
+
+    public IEnumerator GenerationCoroutine() {
         vertices.Clear();
         triangles.Clear();
         submeshes = new List<int>[materials.Count()];
@@ -80,11 +84,14 @@ public class TerrainRenderMesh : MonoBehaviour {
                 CellStack stack = chunk.GetCellStackFromChunkOffset(new Vector2(x, z));
 
                 if (stack != null) {
+                    yield return Ninja.JumpToUnity;
                     GenerateStackMesh(x, z, stack);
+                    yield return Ninja.JumpBack;
                 }
             }
         }
-
+        yield return Ninja.JumpToUnity;
+        terrainRenderMesh.Clear();
         terrainRenderMesh.vertices = vertices.ToArray();
         terrainRenderMesh.triangles = triangles.ToArray();
 
@@ -94,14 +101,15 @@ public class TerrainRenderMesh : MonoBehaviour {
         //Set material for each submesh
         meshRenderer.materials = materials;
 
-        for(int i = 0; i < submeshes.Count(); i++) {
-            if(submeshes[i] != null) {
+        for (int i = 0; i < submeshes.Count(); i++) {
+            if (submeshes[i] != null) {
                 terrainRenderMesh.SetTriangles(submeshes[i], i);
             }
         }
 
         terrainRenderMesh.RecalculateNormals();
         terrainRenderMesh.RecalculateBounds();
+        yield return Ninja.JumpBack;
     }
 
     void GenerateStackMesh(int x, int z, CellStack stack) {

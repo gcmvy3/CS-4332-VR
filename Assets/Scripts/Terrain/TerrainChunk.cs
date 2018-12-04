@@ -13,14 +13,15 @@ public class TerrainChunk : MonoBehaviour {
     bool initialized = false;
     
     CellStack[,] cellStacks;
+    TerrainObject[,] terrainObjects;
+
+    public TerrainObject treePrefab;
 
     TerrainCollisionMesh collisionMesh;
     TerrainRenderMesh renderMesh;
     Canvas gridCanvas = null;
 
     public Vector2 offsetOrigin;
-
-    List<GameObject> trees;
 
     // Use this for initialization
     void Start() {
@@ -32,7 +33,7 @@ public class TerrainChunk : MonoBehaviour {
 		
 	}
 
-    public void Init(HexTerrain parent, float[,] heightMap, Vector2 origin) {
+    public void Init(HexTerrain parent, float[,] heightMap, float[,] treeMap, Vector2Int origin) {
         terrain = parent;
         size = parent.chunkSize;
         offsetOrigin = origin;
@@ -52,6 +53,7 @@ public class TerrainChunk : MonoBehaviour {
 
         cellStacks = new CellStack[size, size];
 
+        // First pass generates terrain from heightmap
         for (int z = 0, i = 0; z < size; z++) {
             for (int x = 0; x < size; x++) {
 
@@ -60,10 +62,18 @@ public class TerrainChunk : MonoBehaviour {
             }
         }
 
+        terrainObjects = new TerrainObject[size, size];
+        bool[,] trees = new bool[size, size];
+
+        // Second pass adds trees and sand
         for (int z = 0, i = 0; z < size; z++) {
             for (int x = 0; x < size; x++) {
 
-                FinalizeStack(cellStacks[x, z]);
+                AddSand(cellStacks[x, z]);
+                float treeChance = treeMap[x, z];
+                if(treeChance > (1 - terrain.treeChance)) {
+                    AddTree(cellStacks[x, z]);
+                }
             }
         }
 
@@ -88,8 +98,9 @@ public class TerrainChunk : MonoBehaviour {
     CellStack CreateCellStack(int x, int z, int height) {
 
         CellStack cellStack = ScriptableObject.CreateInstance<CellStack>();
-        cellStack.coordinates = HexCoordinates.FromOffsetCoordinates(x + (int)offsetOrigin.x, z + (int)offsetOrigin.y);
-        cellStack.indexWithinChunk = new Vector2(x % size, z % size);
+        HexCoordinates coords = HexCoordinates.FromOffsetCoordinates(x + (int)offsetOrigin.x, z + (int)offsetOrigin.y);
+        Vector2Int indexWithinChunk = new Vector2Int(x % size, z % size);
+        cellStack.Init(coords, indexWithinChunk);
         cellStack.Push(CellType.Bedrock);
 
         int numWaterTiles = terrain.waterLevel - height;
@@ -124,47 +135,54 @@ public class TerrainChunk : MonoBehaviour {
         return cellStack;
     }
 
+    // Converts the top cell to sand if certain criteria are met
     // This modifies terrain based on neighbor stacks
     // Thus it should only be called after all cell stacks are generated
-    public void FinalizeStack(CellStack cellStack) {
+    void AddSand(CellStack cellStack) {
 
         HexCoordinates[] neighbors = cellStack.coordinates.GetNeighbors();
         for (int i = 0; i < 6; i++) {
             CellStack neighbor = GetCellStackFromWorldCoords(neighbors[i]);
 
             // The neighbor cell stack might not be in this chunk
-            if(neighbor == null) {
+            if (neighbor == null) {
                 TerrainChunk neighborChunk = terrain.GetChunkFromWorldCoords(neighbors[i]);
-                if(neighborChunk != null) {
+                if (neighborChunk != null) {
                     neighbor = neighborChunk.GetCellStackFromWorldCoords(neighbors[i]);
                 }
             }
 
             if (neighbor != null) {
-                if(cellStack.Peek() != CellType.Water) {
+                if (cellStack.Peek() != CellType.Water) {
                     if (cellStack.Count() == terrain.waterLevel + 1 && neighbor.Peek() == CellType.Water) {
                         cellStack.Pop();
                         cellStack.Push(CellType.Sand);
                     }
                 }
-             }
-        }
-
-        trees = new List<GameObject>();
-        if(cellStack.Peek() == CellType.Grass) {
-            bool placeTree = (UnityEngine.Random.value > terrain.treeChance);
-            if(placeTree) {
-                Vector2 offset = cellStack.indexWithinChunk;
-
-                Vector3 treePos = transform.position + new Vector3(offset.x * HexMetrics.innerRadius * 2 + offset.y % 2 * HexMetrics.innerRadius,
-                                                                    transform.localPosition.y + HexMetrics.height * cellStack.Count(),
-                                                                    offset.y * HexMetrics.outerRadius * 1.5f);
-
-                GameObject tree = GameObject.Instantiate(GameObject.Find("Cloneables/Tree"));
-                tree.transform.SetParent(transform);
-                tree.transform.position = treePos;
-                trees.Add(tree);
             }
+        }
+    }
+
+    // Adds a tree on top of stack if certain criteria are met
+    void AddTree(CellStack cellStack) {
+
+        if(cellStack.Peek() == CellType.Grass) {
+            Vector2Int offset = cellStack.indexWithinChunk;
+
+            Vector3 treePos = transform.position + new Vector3(offset.x * HexMetrics.innerRadius * 2 + offset.y % 2 * HexMetrics.innerRadius,
+                                                                transform.localPosition.y + HexMetrics.height * cellStack.Count(),
+                                                                offset.y * HexMetrics.outerRadius * 1.5f);
+
+            // Randomly rotate the tree so it looks less uniform
+            float rotation = UnityEngine.Random.Range(0, 359);
+            Vector3 treeRot = new Vector3(0, rotation, 0);
+
+            TerrainObject tree = GameObject.Instantiate(treePrefab);
+            tree.Init(cellStack.coordinates, offset);
+            tree.transform.SetParent(transform);
+            tree.transform.position = treePos;
+            tree.transform.rotation = Quaternion.Euler(treeRot);
+            terrainObjects[offset.x, offset.y] = tree;
         }
     }
 
@@ -222,6 +240,17 @@ public class TerrainChunk : MonoBehaviour {
         CellStack stack = GetCellStackFromWorldCoords(coordinates);
         stack.Pop();
         GenerateMeshes();
+    }
+
+    public void RemoveTerrainObject(HexCoordinates coordinates) {
+        //TODO this could be more efficient
+        CellStack stack = GetCellStackFromWorldCoords(coordinates);
+        Vector2Int index = stack.indexWithinChunk;
+        TerrainObject obj = terrainObjects[index.x, index.y];
+        if(obj != null) {
+            terrainObjects[index.x, index.y] = null;
+            GameObject.Destroy(obj.gameObject);
+        }
     }
 
     public void setVisible(bool visible) {

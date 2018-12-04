@@ -216,6 +216,11 @@
     <Compile Include="Assets\3rd Party\SteamVR\Scripts\SteamVR_TrackedObject.cs" />
     <Compile Include="Assets\3rd Party\SteamVR\Scripts\SteamVR_UpdatePoses.cs" />
     <Compile Include="Assets\3rd Party\SteamVR\Scripts\SteamVR_Utils.cs" />
+    <Compile Include="Assets\3rd Party\Thread Ninja\Example\ExampleScript.cs" />
+    <Compile Include="Assets\3rd Party\Thread Ninja\Ninja.cs" />
+    <Compile Include="Assets\3rd Party\Thread Ninja\Task.cs" />
+    <Compile Include="Assets\3rd Party\Thread Ninja\TaskState.cs" />
+    <Compile Include="Assets\3rd Party\Thread Ninja\ThreadNinjaMonoBehaviourExtensions.cs" />
     <Compile Include="Assets\3rd Party\VRTeleporter\Sample\SampleVRTeleporterController.cs" />
     <Compile Include="Assets\3rd Party\VRTeleporter\VRTeleporter.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Composition\OVRCameraComposition.cs" />
@@ -266,9 +271,11 @@
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRScreenFade.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRTrackedRemote.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRWaitCursor.cs" />
+    <Compile Include="Assets\Scripts\CustomNVRHand.cs" />
     <Compile Include="Assets\Scripts\GameUtils.cs" />
-    <Compile Include="Assets\Scripts\HandMenu.cs" />
     <Compile Include="Assets\Scripts\InputController.cs" />
+    <Compile Include="Assets\Scripts\ItemHolder.cs" />
+    <Compile Include="Assets\Scripts\TerraformItem.cs" />
     <Compile Include="Assets\Scripts\Terrain\CellStack.cs" />
     <Compile Include="Assets\Scripts\Terrain\CellTypes.cs" />
     <Compile Include="Assets\Scripts\Terrain\Environment.cs" />
@@ -276,9 +283,10 @@
     <Compile Include="Assets\Scripts\Terrain\HexCoordinatesDrawer.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexMetrics.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexTerrain.cs" />
-    <Compile Include="Assets\Scripts\Terrain\Terraform.cs" />
+    <Compile Include="Assets\Scripts\Terrain\TerraformController.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerrainChunk.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerrainCollisionMesh.cs" />
+    <Compile Include="Assets\Scripts\Terrain\TerrainObject.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerrainRenderMesh.cs" />
     <None Include="Assets\3rd Party\SteamVR\Resources\SteamVR_Fade.shader" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRUnlitTransparent.shader" />

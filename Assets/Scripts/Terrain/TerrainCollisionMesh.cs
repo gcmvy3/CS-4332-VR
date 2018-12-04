@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using CielaSpike;
 
 public class TerrainCollisionMesh : MonoBehaviour {
 
@@ -48,7 +49,10 @@ public class TerrainCollisionMesh : MonoBehaviour {
 	}
 
     public void Generate() {
-        terrainMesh.Clear();
+        this.StartCoroutineAsync(this.GenerationCoroutine());
+    }
+
+    public IEnumerator GenerationCoroutine() {
         vertices.Clear();
         triangles.Clear();
 
@@ -60,19 +64,24 @@ public class TerrainCollisionMesh : MonoBehaviour {
                 CellStack stack = chunk.GetCellStackFromChunkOffset(new Vector2(x, z));
 
                 if (stack != null) {
+                    yield return Ninja.JumpToUnity;
                     GenerateStackMesh(x, z, stack);
+                    yield return Ninja.JumpBack;
                 }
             }
         }
 
+        yield return Ninja.JumpToUnity;
+        terrainMesh.Clear();
         terrainMesh.vertices = vertices.ToArray();
         terrainMesh.triangles = triangles.ToArray();
         terrainMesh.RecalculateNormals();
         terrainMesh.RecalculateBounds();
 
         meshCollider.sharedMesh = terrainMesh;
+        yield return Ninja.JumpBack;
 
-        navMeshSurface.BuildNavMesh();
+        //navMeshSurface.BuildNavMesh();
     }
     
     void GenerateStackMesh(int x, int z, CellStack stack) {
