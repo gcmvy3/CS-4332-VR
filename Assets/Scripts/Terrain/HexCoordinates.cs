@@ -18,11 +18,14 @@ public struct HexCoordinates {
         return new HexCoordinates(x - z / 2, z);
     }
 
-    public static HexCoordinates FromGlobalPosition(Vector3 position) {
-        float x = position.x / (HexMetrics.innerRadius * 2f);
+    public static HexCoordinates WorldCoordsFromGlobalPosition(HexTerrain terrain, Vector3 position) {
+
+        position -= terrain.transform.position;
+
+        float x = position.x / ((HexMetrics.innerRadius * terrain.transform.localScale.x) * 2f);
         float y = -x;
 
-        float offset = position.z / (HexMetrics.outerRadius * 3f);
+        float offset = position.z / ((HexMetrics.outerRadius * terrain.transform.localScale.z) * 3f);
         x -= offset;
         y -= offset;
 
@@ -78,10 +81,16 @@ public struct HexCoordinates {
         return position;
     }
 
-    public Vector3 ToWorldPosition(TerrainChunk chunk) {
-        Vector3 position = ToChunkPosition();
+    public Vector3 ToWorldPosition(HexTerrain terrain) {
 
-        position += chunk.transform.parent.position;
+        Vector2 offset = ToOffsetCoordinates();
+
+        Vector3 position = new Vector3();
+        position.x = offset.x * (HexMetrics.ScaledInnerRadius(terrain) * 2f) + (offset.y % 2) * HexMetrics.ScaledInnerRadius(terrain); ;
+        position.y = 0f;
+        position.z = offset.y * (HexMetrics.ScaledOuterRadius(terrain) * 1.5f);
+
+        position += terrain.transform.position;
 
         return position;
     }

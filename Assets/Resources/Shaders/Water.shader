@@ -8,9 +8,9 @@
 		_WaveSpeed("Wave Speed", float) = 1.0
 		_WaveAmp("Wave Amp", float) = 0.2
 		_DepthRampTex("Depth Ramp", 2D) = "white" {}
-	_NoiseTex("Noise Texture", 2D) = "white" {}
-	_MainTex("Main Texture", 2D) = "white" {}
-	_DistortStrength("Distort Strength", float) = 1.0
+		_NoiseTex("Noise Texture", 2D) = "white" {}
+		_MainTex("Main Texture", 2D) = "white" {}
+		_DistortStrength("Distort Strength", float) = 1.0
 		_ExtraHeight("Extra Height", float) = 0.0
 	}
 
@@ -32,9 +32,9 @@
 	{
 
 		CGPROGRAM
-#pragma vertex vert
-#pragma fragment frag
-#include "UnityCG.cginc"
+		#pragma vertex vert
+		#pragma fragment frag
+		#include "UnityCG.cginc"
 
 		// Properties
 		sampler2D _BackgroundTexture;

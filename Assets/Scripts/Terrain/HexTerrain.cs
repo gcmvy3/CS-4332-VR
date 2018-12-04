@@ -8,6 +8,8 @@ public class HexTerrain : MonoBehaviour {
 
     public float terrainScale = 5.0f;
     public float forestScale = 5.0f;
+    public float shorelineWaterHeight = 0.75f;
+    public float stoneHeightPercentage = 0.2f;
     public int chunkSize = 8;
     public int numChunks = 4;
     public int maxHeight = 6;
@@ -20,6 +22,9 @@ public class HexTerrain : MonoBehaviour {
     TerrainChunk chunkTemplate;
     TerrainChunk[,] chunks;
 
+    public Material waterMaterial;
+    GameObject waterMesh;
+
     // Use this for initialization
     void Awake() {
         chunkTemplate = GetComponentInChildren<TerrainChunk>();
@@ -28,7 +33,9 @@ public class HexTerrain : MonoBehaviour {
 
         transform.position -= new Vector3(GetWidth() / 2 - HexMetrics.innerRadius, 0, GetDepth() / 2 - (HexMetrics.outerRadius * 0.75f));
 
-        GenerateProceduralMap();
+        InitWaterMesh();
+
+        GenerateProceduralMap();        
     }
 
     private void GenerateProceduralMap() {
@@ -56,6 +63,66 @@ public class HexTerrain : MonoBehaviour {
             }
         }
     }
+
+    private void InitWaterMesh() {
+        // Create water mesh to sit at water level in each chunk
+        waterMesh = new GameObject("WaterMesh");
+        waterMesh.AddComponent<MeshFilter>();
+        waterMesh.AddComponent<MeshRenderer>();
+        waterMesh.GetComponent<MeshRenderer>().sharedMaterial = waterMaterial;
+        waterMesh.transform.parent = transform;
+
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+
+        int triangleIndex = 0;
+        int rows = chunkSize;
+        int columns = chunkSize;
+
+        for (int z = 0; z < rows; z++) {
+            for (int x = 0; x < columns; x++) {
+
+                Vector3 center = HexCoordinates.FromOffsetCoordinates(x, z).ToChunkPosition();
+
+                for (int i = 0; i < 6; i++) {
+
+                    AddTriangleToMesh(
+                        vertices,
+                        triangles,
+                        center,
+                        center + HexMetrics.corners[i],
+                        center + HexMetrics.corners[i + 1]
+                    );
+                }
+            }
+        }
+
+        Mesh mesh = new Mesh();
+        mesh.name = "WaterRenderMesh";
+        mesh.Clear();
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+
+        waterMesh.GetComponent<MeshFilter>().sharedMesh = mesh;
+    }
+
+    private void AddTriangleToMesh(List<Vector3> vertices, List<int> triangles, Vector3 v1, Vector3 v2, Vector3 v3) {
+
+        int vertexIndex = vertices.Count;
+        vertices.Add(v1);
+        vertices.Add(v2);
+        vertices.Add(v3);
+        triangles.Add(vertexIndex);
+        triangles.Add(vertexIndex + 1);
+        triangles.Add(vertexIndex + 2);
+    }
+
+    public GameObject GetWaterMesh() {
+        return waterMesh;
+    }
+
 
     public TerrainChunk GetChunkFromWorldCoords(HexCoordinates coords) {
         Vector2 offsetCoords = coords.ToOffsetCoordinates();

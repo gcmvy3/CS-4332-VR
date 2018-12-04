@@ -281,33 +281,7 @@ Prefab:
       propertyPath: missingMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 2af22b2f9a3374f49a977ff306cbb7b2, type: 2}
-    - target: {fileID: 114119549272575864, guid: e996ec124c41124438084d47e6098692,
-        type: 2}
-      propertyPath: treeChance
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114119549272575864, guid: e996ec124c41124438084d47e6098692,
-        type: 2}
-      propertyPath: chunkRows
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114119549272575864, guid: e996ec124c41124438084d47e6098692,
-        type: 2}
-      propertyPath: chunkColumns
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114119549272575864, guid: e996ec124c41124438084d47e6098692,
-        type: 2}
-      propertyPath: chunkSize
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114119549272575864, guid: e996ec124c41124438084d47e6098692,
-        type: 2}
-      propertyPath: numChunks
-      value: 8
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114019281232637116, guid: e996ec124c41124438084d47e6098692, type: 2}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e996ec124c41124438084d47e6098692, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &143578262
@@ -583,13 +557,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6e5eb5e7fa39a43a2bba4c13fc66b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enabled: 0
+  enabled: 1
   ghostMaterial: {fileID: 2100000, guid: da1028b405d2d4f4084e33fe5e6c9b72, type: 2}
   ghostCellPrefab: {fileID: 1647583224427960, guid: c94b652ae994d3f498e92a6182c00aa1,
     type: 2}
   terrain: {fileID: 1072923886}
   PointerColor: {r: 1, g: 1, b: 1, a: 0}
   PointerWidth: 0.02
+  pointerTracker: {fileID: 0}
 --- !u!4 &233302922
 Transform:
   m_ObjectHideFlags: 0
@@ -721,7 +696,7 @@ MonoBehaviour:
   CanAttach: 1
   AllowTwoHanded: 0
   DisableKinematicOnAttach: 0
-  EnableKinematicOnDetach: 0
+  EnableKinematicOnDetach: 1
   DropDistance: 10000
   EnableGravityOnDetach: 0
   AttachedHands: []
@@ -752,7 +727,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   itemHolder: {fileID: 294634633}
-  cellType: 3
+  cellType: 4
 --- !u!1001 &294634632
 Prefab:
   m_ObjectHideFlags: 0
@@ -1279,6 +1254,7 @@ MonoBehaviour:
   terrain: {fileID: 1072923886}
   PointerColor: {r: 1, g: 1, b: 1, a: 0}
   PointerWidth: 0.02
+  pointerTracker: {fileID: 0}
 --- !u!4 &699759915 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4441700732022294, guid: 7751dc60525a20842a990e1a87e3cb59,
@@ -1522,7 +1498,7 @@ MonoBehaviour:
   CanAttach: 1
   AllowTwoHanded: 0
   DisableKinematicOnAttach: 0
-  EnableKinematicOnDetach: 0
+  EnableKinematicOnDetach: 1
   DropDistance: 10000
   EnableGravityOnDetach: 0
   AttachedHands: []
@@ -1713,7 +1689,7 @@ MonoBehaviour:
   CanAttach: 1
   AllowTwoHanded: 0
   DisableKinematicOnAttach: 0
-  EnableKinematicOnDetach: 0
+  EnableKinematicOnDetach: 1
   DropDistance: 10000
   EnableGravityOnDetach: 0
   AttachedHands: []
@@ -2456,7 +2432,7 @@ MonoBehaviour:
   CanAttach: 1
   AllowTwoHanded: 0
   DisableKinematicOnAttach: 0
-  EnableKinematicOnDetach: 0
+  EnableKinematicOnDetach: 1
   DropDistance: 10000
   EnableGravityOnDetach: 0
   AttachedHands: []
@@ -2507,6 +2483,7 @@ GameObject:
   - component: {fileID: 2019664909}
   - component: {fileID: 2019664908}
   - component: {fileID: 2019664907}
+  - component: {fileID: 2019664912}
   m_Layer: 9
   m_Name: Head
   m_TagString: MainCamera
@@ -2605,6 +2582,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dd93dbead6c28e42b0408c298a10966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2019664912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2019664905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e35576a2a2469e4da504bad4a5eb5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2072371449
 Prefab:
   m_ObjectHideFlags: 0
@@ -2644,6 +2632,20 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1015701359897466, guid: 40cd5b6f688acdd4eb4812563c5b74c2, type: 2}
+      propertyPath: m_Name
+      value: StoneCellPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 114686479936291390, guid: 40cd5b6f688acdd4eb4812563c5b74c2,
+        type: 2}
+      propertyPath: itemHolder
+      value: 
+      objectReference: {fileID: 339853446}
+    - target: {fileID: 114686479936291390, guid: 40cd5b6f688acdd4eb4812563c5b74c2,
+        type: 2}
+      propertyPath: cellType
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40cd5b6f688acdd4eb4812563c5b74c2, type: 2}
   m_IsPrefabAsset: 0
@@ -2652,70 +2654,3 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1015701359897466, guid: 40cd5b6f688acdd4eb4812563c5b74c2,
     type: 2}
   m_PrefabInternal: {fileID: 2072371449}
---- !u!4 &2072371451 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4113627202144334, guid: 40cd5b6f688acdd4eb4812563c5b74c2,
-    type: 2}
-  m_PrefabInternal: {fileID: 2072371449}
---- !u!114 &2072371452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2072371450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7380fda91c3e93c42b6ea792ecb7be93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Rigidbody: {fileID: 2072371456}
-  CanAttach: 1
-  AllowTwoHanded: 0
-  DisableKinematicOnAttach: 0
-  EnableKinematicOnDetach: 0
-  DropDistance: 10000
-  EnableGravityOnDetach: 0
-  AttachedHands: []
-  InteractionPoint: {fileID: 2072371451}
-  OnUseButtonDown:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnUseButtonUp:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnHovering:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnBeginInteraction:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnEndInteraction:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  itemHolder: {fileID: 339853446}
-  cellType: 4
---- !u!54 &2072371456
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2072371450}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0

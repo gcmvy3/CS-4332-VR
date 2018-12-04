@@ -11,13 +11,13 @@ public class TerrainRenderMesh : MonoBehaviour {
     public Material missingMaterial;
 
     public Material bedrockTop;
-    public Material waterTop;
+    public Material stoneTop;
     public Material dirtTop;
     public Material grassTop;
     public Material sandTop;
 
     public Material bedrockSide;
-    public Material waterSide;
+    public Material stoneSide;
     public Material dirtSide;
     public Material grassSide;
     public Material sandSide;
@@ -51,7 +51,7 @@ public class TerrainRenderMesh : MonoBehaviour {
         renderObject.transform.SetParent(gameObject.transform);
         renderObject.transform.localPosition = new Vector3(0, 0, 0);
 
-        materials = new[] { missingMaterial, bedrockTop, waterTop, dirtTop, grassTop, sandTop, bedrockSide, waterSide, dirtSide, grassSide, sandSide };
+        materials = new[] { missingMaterial, bedrockTop, stoneTop, dirtTop, grassTop, sandTop, bedrockSide, stoneSide, dirtSide, grassSide, sandSide };
 
         terrainRenderMesh = new Mesh();
         terrainRenderMesh.name = "TerrainRenderMesh";
@@ -229,8 +229,8 @@ public class TerrainRenderMesh : MonoBehaviour {
         if(cell == CellType.Bedrock) {
             return bedrockTop;
         }
-        else if (cell == CellType.Water) {
-            return waterTop;
+        else if (cell == CellType.Stone) {
+            return stoneTop;
         }
         else if(cell == CellType.Dirt) {
             return dirtTop;
@@ -251,8 +251,8 @@ public class TerrainRenderMesh : MonoBehaviour {
         if (cell == CellType.Bedrock) {
             return bedrockSide;
         }
-        else if (cell == CellType.Water) {
-            return waterSide;
+        else if (cell == CellType.Stone) {
+            return stoneSide;
         }
         else if (cell == CellType.Dirt) {
             return dirtSide;

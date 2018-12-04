@@ -21,4 +21,20 @@ public static class HexMetrics {
         new Vector3(-innerRadius, 0f, 0.5f * outerRadius),
         new Vector3(0f, 0f, outerRadius)
     };
+
+    public static float ScaledInnerRadius(HexTerrain terrain) {
+        return innerRadius * terrain.transform.localScale.x;
+    }
+
+    public static float ScaledOuterRadius(HexTerrain terrain) {
+        return outerRadius * terrain.transform.localScale.z;
+    }
+
+    public static float ScaledHeight(HexTerrain terrain) {
+        return height * terrain.transform.localScale.y;
+    }
+
+    public static Vector3 ScaledHeightVector(HexTerrain terrain) {
+        return new Vector3(0, ScaledHeight(terrain), 0);
+    }
 }

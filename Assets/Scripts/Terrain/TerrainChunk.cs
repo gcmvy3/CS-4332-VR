@@ -3,15 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CielaSpike;
 
 public class TerrainChunk : MonoBehaviour {
 
-    public bool showCoordinates = false;
+    
     public HexTerrain terrain;
     public int size;
-
-    bool initialized = false;
     
+    public bool showCoordinates = false;
+    bool initialized = false;
+
     CellStack[,] cellStacks;
     TerrainObject[,] terrainObjects;
 
@@ -19,6 +21,8 @@ public class TerrainChunk : MonoBehaviour {
 
     TerrainCollisionMesh collisionMesh;
     TerrainRenderMesh renderMesh;
+    GameObject waterMesh = null;
+
     Canvas gridCanvas = null;
 
     public Vector2 offsetOrigin;
@@ -27,11 +31,11 @@ public class TerrainChunk : MonoBehaviour {
     void Start() {
 
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+    void Update() {
+
+    }
 
     public void Init(HexTerrain parent, float[,] heightMap, float[,] treeMap, Vector2Int origin) {
         terrain = parent;
@@ -47,7 +51,7 @@ public class TerrainChunk : MonoBehaviour {
         transform.position = parent.transform.position;
         transform.localPosition = new Vector3(HexMetrics.innerRadius * 2 * origin.x, 0, HexMetrics.outerRadius * 1.5f * origin.y);
 
-        if(showCoordinates) {
+        if (showCoordinates) {
             InitCanvas();
         }
 
@@ -71,7 +75,7 @@ public class TerrainChunk : MonoBehaviour {
 
                 AddSand(cellStacks[x, z]);
                 float treeChance = treeMap[x, z];
-                if(treeChance > (1 - terrain.treeChance)) {
+                if (treeChance > (1 - terrain.treeChance)) {
                     AddTree(cellStacks[x, z]);
                 }
             }
@@ -103,17 +107,17 @@ public class TerrainChunk : MonoBehaviour {
         cellStack.Init(coords, indexWithinChunk);
         cellStack.Push(CellType.Bedrock);
 
-        int numWaterTiles = terrain.waterLevel - height;
+        int numStoneTiles = (int)(height * terrain.stoneHeightPercentage);
 
         // Generate terrian based on stack height
-        for (int i = 0; i < Math.Max(height, terrain.waterLevel); i++) {
+        for (int i = 0; i < height; i++) {
             CellType newCell;
 
-            if (numWaterTiles > 0 && i >= height) {
-                newCell = CellType.Water;
-            }
-            else if (numWaterTiles <= 0 && i == height - 1) {
+            if (height >= terrain.waterLevel - 1 && i == height - 1) {
                 newCell = CellType.Grass;
+            }
+            else if(i < numStoneTiles) {
+                newCell = CellType.Stone;
             }
             else {
                 newCell = CellType.Dirt;
@@ -140,23 +144,24 @@ public class TerrainChunk : MonoBehaviour {
     // Thus it should only be called after all cell stacks are generated
     void AddSand(CellStack cellStack) {
 
-        HexCoordinates[] neighbors = cellStack.coordinates.GetNeighbors();
-        for (int i = 0; i < 6; i++) {
-            CellStack neighbor = GetCellStackFromWorldCoords(neighbors[i]);
+        if (cellStack.Count() == terrain.waterLevel) {
+            HexCoordinates[] neighbors = cellStack.coordinates.GetNeighbors();
+            for (int i = 0; i < 6; i++) {
+                CellStack neighbor = GetCellStackFromWorldCoords(neighbors[i]);
 
-            // The neighbor cell stack might not be in this chunk
-            if (neighbor == null) {
-                TerrainChunk neighborChunk = terrain.GetChunkFromWorldCoords(neighbors[i]);
-                if (neighborChunk != null) {
-                    neighbor = neighborChunk.GetCellStackFromWorldCoords(neighbors[i]);
+                // The neighbor cell stack might not be in this chunk
+                if (neighbor == null) {
+                    TerrainChunk neighborChunk = terrain.GetChunkFromWorldCoords(neighbors[i]);
+                    if (neighborChunk != null) {
+                        neighbor = neighborChunk.GetCellStackFromWorldCoords(neighbors[i]);
+                    }
                 }
-            }
 
-            if (neighbor != null) {
-                if (cellStack.Peek() != CellType.Water) {
-                    if (cellStack.Count() == terrain.waterLevel + 1 && neighbor.Peek() == CellType.Water) {
+                if (neighbor != null) {
+                    if (neighbor.Count() < terrain.waterLevel) {
                         cellStack.Pop();
                         cellStack.Push(CellType.Sand);
+                        break;
                     }
                 }
             }
@@ -166,7 +171,7 @@ public class TerrainChunk : MonoBehaviour {
     // Adds a tree on top of stack if certain criteria are met
     void AddTree(CellStack cellStack) {
 
-        if(cellStack.Peek() == CellType.Grass) {
+        if(cellStack.Count() > terrain.waterLevel && cellStack.Peek() == CellType.Grass) {
             Vector2Int offset = cellStack.indexWithinChunk;
 
             Vector3 treePos = transform.position + new Vector3(offset.x * HexMetrics.innerRadius * 2 + offset.y % 2 * HexMetrics.innerRadius,
@@ -187,8 +192,20 @@ public class TerrainChunk : MonoBehaviour {
     }
 
     public void GenerateMeshes() {
-        collisionMesh.Generate();
         renderMesh.Generate();
+        collisionMesh.Generate();
+
+        if (waterMesh == null) {
+            GenerateWaterMesh();
+        }
+    }
+
+    void GenerateWaterMesh() {
+        waterMesh = Instantiate(terrain.GetWaterMesh());
+        waterMesh.transform.parent = transform;
+        waterMesh.transform.position = transform.position;
+        waterMesh.transform.position += (terrain.waterLevel - 1) * HexMetrics.heightVector;
+        waterMesh.transform.position += HexMetrics.heightVector * terrain.shorelineWaterHeight;
     }
 
     public CellStack GetCellStackFromWorldCoords(HexCoordinates coords) {
@@ -219,27 +236,35 @@ public class TerrainChunk : MonoBehaviour {
 
     public void AddCell(CellType cell, HexCoordinates coords) {
         CellStack stack = GetCellStackFromWorldCoords(coords);
+        if(stack) {
+            // Only trees can be placed on top of grass
+            // So if something else is placed on top of grass, turn the grass into dirt
+            if (cell != CellType.Trees && stack.Peek() == CellType.Grass) {
+                stack.Pop();
+                stack.Push(CellType.Dirt);
+            }
 
-        // Only trees can be placed on top of grass
-        // So if something else is placed on top of grass, turn the grass into dirt
-        if(cell != CellType.Trees && stack.Peek() == CellType.Grass) {
-            stack.Pop();
-            stack.Push(CellType.Dirt);
+            stack.Push(cell);
+            GenerateMeshes();
         }
-
-        stack.Push(cell);
-        GenerateMeshes();
     }
 
     public bool CanRemoveCell(HexCoordinates coordinates) {
         CellStack stack = GetCellStackFromWorldCoords(coordinates);
-        return stack.CanPop();
+        if(stack) {
+            return stack.CanPop();
+        }
+        else {
+            return false;
+        }
     }
 
     public void RemoveCell(HexCoordinates coordinates) {
         CellStack stack = GetCellStackFromWorldCoords(coordinates);
-        stack.Pop();
-        GenerateMeshes();
+        if(stack) {
+            stack.Pop();
+            GenerateMeshes();
+        }
     }
 
     public void RemoveTerrainObject(HexCoordinates coordinates) {
@@ -253,7 +278,7 @@ public class TerrainChunk : MonoBehaviour {
         }
     }
 
-    public void setVisible(bool visible) {
+    public void SetVisible(bool visible) {
         renderMesh.enabled = visible;
         collisionMesh.enabled = visible;
     }

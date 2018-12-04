@@ -38,7 +38,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4862942631572498}
   - component: {fileID: 114119549272575864}
-  - component: {fileID: 114019281232637116}
   m_Layer: 0
   m_Name: TerrainPrefab
   m_TagString: Untagged
@@ -53,7 +52,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1344596889895938}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -12.2, z: 16.7}
+  m_LocalPosition: {x: 0, y: 32.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4932654208038538}
@@ -86,27 +85,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missingMaterial: {fileID: 0}
   bedrockTop: {fileID: 2100000, guid: 8e02d94a1cd458d4992ccd1dd4056a60, type: 2}
-  waterTop: {fileID: 2100000, guid: c8d31ac7740f5504a84607455cd92227, type: 2}
+  stoneTop: {fileID: 2100000, guid: 0594854ad07a77944a1c08509424cee7, type: 2}
   dirtTop: {fileID: 2100000, guid: 1fd7518ca06323447afc2715da6717bd, type: 2}
   grassTop: {fileID: 2100000, guid: 2b840833b26a1ce4ebe7ce63643b7e03, type: 2}
   sandTop: {fileID: 2100000, guid: 589e2d09a0ffdaa408b7fcd0bcc86ced, type: 2}
   bedrockSide: {fileID: 2100000, guid: 8e02d94a1cd458d4992ccd1dd4056a60, type: 2}
-  waterSide: {fileID: 2100000, guid: c8d31ac7740f5504a84607455cd92227, type: 2}
+  stoneSide: {fileID: 2100000, guid: 0594854ad07a77944a1c08509424cee7, type: 2}
   dirtSide: {fileID: 2100000, guid: 1fd7518ca06323447afc2715da6717bd, type: 2}
   grassSide: {fileID: 2100000, guid: 2b840833b26a1ce4ebe7ce63643b7e03, type: 2}
   sandSide: {fileID: 2100000, guid: 589e2d09a0ffdaa408b7fcd0bcc86ced, type: 2}
---- !u!114 &114019281232637116
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1344596889895938}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e6e5eb5e7fa39a43a2bba4c13fc66b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ghostMaterial: {fileID: 2100000, guid: da1028b405d2d4f4084e33fe5e6c9b72, type: 2}
 --- !u!114 &114119549272575864
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -120,14 +107,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainScale: 15
   forestScale: 10
-  chunkSize: 6
-  chunkRows: 6
-  chunkColumns: 6
+  shorelineWaterHeight: 0.75
+  stoneHeightPercentage: 0.2
+  chunkSize: 4
+  numChunks: 8
   maxHeight: 18
-  waterLevel: 4
+  waterLevel: 6
   treeChance: 0.5
   cellLabelPrefab: {fileID: 114792996082348872, guid: f0e5574ff79e31245a489893a2a868a8,
     type: 2}
+  waterMaterial: {fileID: 2100000, guid: c8d31ac7740f5504a84607455cd92227, type: 2}
 --- !u!114 &114306586472704912
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -150,9 +139,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6c1d8b87865ab4291b1fac1e3e8a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showCoordinates: 0
   terrain: {fileID: 114119549272575864}
   size: 4
+  showCoordinates: 0
   treePrefab: {fileID: 114656059347011704, guid: 60e559623aeaa7c448db2699b7cbcf02,
     type: 2}
   offsetOrigin: {x: 0, y: 0}

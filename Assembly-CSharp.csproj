@@ -272,6 +272,7 @@
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRTrackedRemote.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRWaitCursor.cs" />
     <Compile Include="Assets\Scripts\CustomNVRHand.cs" />
+    <Compile Include="Assets\Scripts\EnableDepthTexture.cs" />
     <Compile Include="Assets\Scripts\GameUtils.cs" />
     <Compile Include="Assets\Scripts\InputController.cs" />
     <Compile Include="Assets\Scripts\ItemHolder.cs" />
@@ -280,7 +281,6 @@
     <Compile Include="Assets\Scripts\Terrain\CellTypes.cs" />
     <Compile Include="Assets\Scripts\Terrain\Environment.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexCoordinates.cs" />
-    <Compile Include="Assets\Scripts\Terrain\HexCoordinatesDrawer.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexMetrics.cs" />
     <Compile Include="Assets\Scripts\Terrain\HexTerrain.cs" />
     <Compile Include="Assets\Scripts\Terrain\TerraformController.cs" />

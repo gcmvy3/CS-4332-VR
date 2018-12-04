@@ -23,10 +23,12 @@ public class ItemHolder : MonoBehaviour {
     public void ResetItemPosition() {
         item.transform.parent = transform;
         item.transform.position = itemPosition.position;
+        item.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
         Rigidbody itemBody = item.GetComponent<Rigidbody>();
         if (itemBody) {
             itemBody.velocity = Vector3.zero;
+            itemBody.angularVelocity = Vector3.zero;
         }
     }
 }

@@ -6,8 +6,8 @@ public enum CellType{
     Missing,
     Bedrock,
     Dirt,
+    Stone,
     Grass,
-    Water,
     Sand,
     Trees
 }

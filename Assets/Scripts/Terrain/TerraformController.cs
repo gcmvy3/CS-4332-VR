@@ -13,7 +13,7 @@ public class TerraformController : MonoBehaviour {
 
     public HexTerrain terrain;
 
-    CellType cellType;
+    CellType cellType = CellType.Missing;
 
     Vector3 pointerOrigin;
     Vector3 pointerTarget;
@@ -24,6 +24,8 @@ public class TerraformController : MonoBehaviour {
     private LineRenderer Pointer;
 
     private bool clicked = false;
+
+    public GameObject pointerTracker = null;
 
     // Use this for initialization
     void Start() {
@@ -37,6 +39,7 @@ public class TerraformController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
         if(enabled) {
             Pointer.enabled = true;
             UpdatePointer();
@@ -61,6 +64,7 @@ public class TerraformController : MonoBehaviour {
     }
 
     private void UpdatePointer() {
+        //TODO is this necessary here?
         Pointer.material.SetColor("_Color", PointerColor);
         NVRHelpers.LineRendererSetColor(Pointer, PointerColor, PointerColor);
         NVRHelpers.LineRendererSetWidth(Pointer, PointerWidth, PointerWidth);
@@ -69,6 +73,8 @@ public class TerraformController : MonoBehaviour {
         //TODO fix pointer angle
         pointerTarget = transform.forward;
 
+        ghostCellPrefab.SetActive(false);
+
         RaycastHit hitInfo;
         bool hit = Physics.Raycast(pointerOrigin, pointerTarget, out hitInfo, 1000);
         Vector3 endPoint;
@@ -76,20 +82,43 @@ public class TerraformController : MonoBehaviour {
         if (hit == true) {
             //1.01 extends the ray slightly to avoid landing on a hex boundary
             endPoint = hitInfo.point * 1.01f;
-            this.TouchCell(endPoint);
 
-            //If button is clicked, add or remove cell
-            if(clicked) {
-                clicked = false;
-                if(cellType == CellType.Missing && this.CanRemoveCell(endPoint)) {
-                    this.RemoveCell(endPoint);
-                }
-                else {
-                    PlaceCell(endPoint);
+            if(pointerTracker != null) {
+                pointerTracker.transform.position = endPoint;
+            }
+
+            //Check if we hit a terrain chunk
+            GameObject hitObjectParent = hitInfo.transform.parent.gameObject;
+            TerrainChunk hitChunk = hitObjectParent.GetComponent<TerrainChunk>();
+
+            if(hitChunk) {
+                HexCoordinates worldCoordinates = HexCoordinates.WorldCoordsFromGlobalPosition(terrain, endPoint);
+
+                Vector2 worldOffset = worldCoordinates.ToOffsetCoordinates();
+
+                this.TouchCell(hitChunk, worldCoordinates);
+
+                //If button is clicked, edit chunk
+                if (clicked) {
+                    clicked = false;
+                    if (cellType == CellType.Missing && hitChunk.CanRemoveCell(worldCoordinates)) {
+                        hitChunk.RemoveTerrainObject(worldCoordinates);
+                        hitChunk.RemoveCell(worldCoordinates);
+                    }
+                    else {
+                        hitChunk.AddCell(cellType, worldCoordinates);
+                    }
+
+                    //Send pulse to controller if terraform was successful
+                    InputController inputController = FindObjectOfType<InputController>();
+                    if(inputController) {
+                        inputController.TriggerPrimaryHandPulse();
+                    }
                 }
             }
         }
         else {
+            //If we missed, extend the pointer out in a straight line
             endPoint = pointerOrigin + (pointerTarget * 1000f);
         }
 
@@ -100,53 +129,17 @@ public class TerraformController : MonoBehaviour {
         clicked = true;
     }
 
-    private void TouchCell(Vector3 position) {
-        position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
-
-        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
-
+    private void TouchCell(TerrainChunk chunk, HexCoordinates coords) {
         try {
-            CellStack stack = chunk.GetCellStackFromWorldCoords(coordinates);
+            CellStack stack = chunk.GetCellStackFromWorldCoords(coords);
 
-            Vector3 ghostPosition = stack.coordinates.ToWorldPosition(chunk) + HexMetrics.heightVector * stack.Count();
-            ghostPosition += HexMetrics.heightVector / 2;
+            ghostCellPrefab.SetActive(true);
+
+            Vector3 ghostPosition = stack.coordinates.ToWorldPosition(terrain) + HexMetrics.ScaledHeightVector(terrain) * stack.Count();
             ghostCellPrefab.transform.localPosition = ghostPosition;
         }
         catch (NullReferenceException e) {
             Debug.LogWarning("Trying to access null cellstack");
-        }
-    }
-
-    private void PlaceCell(Vector3 position) {
-        position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
-        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
-        if(chunk) {
-            chunk.RemoveTerrainObject(coordinates);
-            chunk.AddCell(cellType, coordinates);
-        }
-    }
-
-    public bool CanRemoveCell(Vector3 position) {
-        position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
-        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
-        if(chunk) {
-            return chunk.CanRemoveCell(coordinates);
-        }
-        else {
-            return false;
-        }
-    }
-
-    public void RemoveCell(Vector3 position) {
-        position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromGlobalPosition(position);
-        TerrainChunk chunk = terrain.GetChunkFromWorldCoords(coordinates);
-        if(chunk) {
-            chunk.RemoveTerrainObject(coordinates);
-            chunk.RemoveCell(coordinates);
         }
     }
 
@@ -157,7 +150,7 @@ public class TerraformController : MonoBehaviour {
     private void InitGhostCell() {
         ghostCellPrefab = GameObject.Instantiate(ghostCellPrefab);
         //Scale the cell so it is the correct size
-        Vector3 targetSize = new Vector3(HexMetrics.innerRadius * 2, HexMetrics.height, HexMetrics.outerRadius * 2);
+        Vector3 targetSize = new Vector3(HexMetrics.ScaledInnerRadius(terrain) * 2, HexMetrics.ScaledHeight(terrain), HexMetrics.ScaledOuterRadius(terrain) * 2);
         GameUtils.ScaleGameObjectToSize(ghostCellPrefab, targetSize);
 
         //Set the initial position of the ghost cell

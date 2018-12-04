@@ -18,10 +18,12 @@ public class InputController : MonoBehaviour {
     public float rotationAmount = 20;
 
     private bool justRotated = false;
+    private Vector3 startingPosition;
     
     // Use this for initialization
     void Start () {
         player = GetComponent<NVRPlayer>();
+        startingPosition = player.transform.position;
 
         //Init teleporter
         teleporter = secondaryHand.teleporter;
@@ -68,15 +70,30 @@ public class InputController : MonoBehaviour {
             }
             else if(secondaryHand.UseButtonUp) {
                 float playerHeight = player.transform.position.y;
-                teleporter.ToggleDisplay(false);
                 teleporter.Teleport();
+                teleporter.ToggleDisplay(false);
                 player.transform.position = new Vector3(player.transform.position.x, playerHeight, player.transform.position.z);
             }
+        }
+
+        //Clicking in primary stick resets player position
+        //if(secondaryHand.GetCo
+        NVRInputDevice controller = primaryHand.GetComponent<NVRInputDevice>();
+        if(controller.GetPressDown(NVRButtons.A)) {
+            player.transform.position = startingPosition;
         }
 
         //Terraform
         if(primaryHand.UseButtonDown && terraformController.isActiveAndEnabled) {
             terraformController.Click();
         }
+    }
+
+    public void TriggerPrimaryHandPulse() {
+        primaryHand.TriggerHapticPulse();
+    }
+
+    public void TriggerSecondaryHandPulse() {
+        secondaryHand.TriggerHapticPulse();
     }
 }
