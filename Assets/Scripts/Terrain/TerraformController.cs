@@ -13,6 +13,7 @@ public class TerraformController : MonoBehaviour {
 
     public HexTerrain terrain;
 
+    TerrainObjectType objectType = TerrainObjectType.Missing;
     CellType cellType = CellType.Missing;
 
     Vector3 pointerOrigin;
@@ -41,11 +42,13 @@ public class TerraformController : MonoBehaviour {
     void Update() {
 
         if(enabled) {
+            ghostCellPrefab.GetComponent<MeshRenderer>().enabled = true;
             Pointer.enabled = true;
             UpdatePointer();
         }
-        else if (Pointer.enabled) {
+        else {
             Pointer.enabled = false;
+            ghostCellPrefab.GetComponent<MeshRenderer>().enabled = false;
         }
     }
 
@@ -101,12 +104,23 @@ public class TerraformController : MonoBehaviour {
                 //If button is clicked, edit chunk
                 if (clicked) {
                     clicked = false;
-                    if (cellType == CellType.Missing && hitChunk.CanRemoveCell(worldCoordinates)) {
-                        hitChunk.RemoveTerrainObject(worldCoordinates);
-                        hitChunk.RemoveCell(worldCoordinates);
+                    if(objectType == TerrainObjectType.Cell) {
+                        if (cellType == CellType.Missing && hitChunk.CanRemoveCell(worldCoordinates)) {
+                            hitChunk.RemoveTerrainObject(worldCoordinates);
+                            hitChunk.RemoveCell(worldCoordinates);
+                        }
+                        else {
+                            hitChunk.RemoveTerrainObject(worldCoordinates);
+                            hitChunk.AddCell(cellType, worldCoordinates);
+                        }
                     }
                     else {
-                        hitChunk.AddCell(cellType, worldCoordinates);
+                        if (objectType == TerrainObjectType.Missing) {
+                            hitChunk.RemoveTerrainObject(worldCoordinates);
+                        }
+                        else {
+                            hitChunk.AddTerrainObject(objectType, worldCoordinates);
+                        }
                     }
 
                     //Send pulse to controller if terraform was successful
@@ -147,7 +161,13 @@ public class TerraformController : MonoBehaviour {
         cellType = type;
     }
 
+    public void SetObjectType(TerrainObjectType type) {
+        objectType = type;
+    }
+
     private void InitGhostCell() {
+        Debug.Log("Scaling ghost cell");
+
         ghostCellPrefab = GameObject.Instantiate(ghostCellPrefab);
         //Scale the cell so it is the correct size
         Vector3 targetSize = new Vector3(HexMetrics.ScaledInnerRadius(terrain) * 2, HexMetrics.ScaledHeight(terrain), HexMetrics.ScaledOuterRadius(terrain) * 2);

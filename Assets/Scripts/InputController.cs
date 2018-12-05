@@ -36,21 +36,25 @@ public class InputController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if(secondaryHand.collisionEnabled) {
+            secondaryHand.DisableCollision();
+        }
+
+        NVRInputDevice primaryInput = primaryHand.GetComponent<NVRInputDevice>();
+        NVRInputDevice secondaryInput = secondaryHand.GetComponent<NVRInputDevice>();
 
         //Allow player to turn rapidly with secondary joystick
-        NVRButtonInputs joystickValue;
-        if(secondaryHand.Inputs.TryGetValue(NVRButtons.Axis0, out joystickValue)) {
-            float joystickX = joystickValue.Axis.x;
-            if(!justRotated && Mathf.Abs(joystickX) >= rotateThreshold) {
+        float joystickX = secondaryHand.Inputs[NVRButtons.Touchpad].Axis.x;
 
-                float rotation = rotationAmount * Mathf.Sign(joystickX);
+        if(!justRotated && Mathf.Abs(joystickX) >= rotateThreshold) {
 
-                player.transform.Rotate(new Vector3(0, rotation, 0));
-                justRotated = true;
-            }
-            else if(justRotated && Mathf.Abs(joystickX) < rotateThreshold) {
-                justRotated = false;
-            }
+            float rotation = rotationAmount * Mathf.Sign(joystickX);
+
+            player.transform.Rotate(new Vector3(0, rotation, 0));
+            justRotated = true;
+        }
+        else if(justRotated && Mathf.Abs(joystickX) < rotateThreshold) {
+            justRotated = false;
         }
 
         //Allow "pulling" movement by gripping with secondary hand
@@ -76,10 +80,8 @@ public class InputController : MonoBehaviour {
             }
         }
 
-        //Clicking in primary stick resets player position
-        //if(secondaryHand.GetCo
-        NVRInputDevice controller = primaryHand.GetComponent<NVRInputDevice>();
-        if(controller.GetPressDown(NVRButtons.A)) {
+        //Pressing A resets player position
+        if(primaryInput.GetPressDown(NVRButtons.A)) {
             player.transform.position = startingPosition;
         }
 

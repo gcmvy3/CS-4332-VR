@@ -171,7 +171,7 @@ public class TerrainChunk : MonoBehaviour {
     // Adds a tree on top of stack if certain criteria are met
     void AddTree(CellStack cellStack) {
 
-        if(cellStack.Count() > terrain.waterLevel && cellStack.Peek() == CellType.Grass) {
+        if(cellStack.Count() > terrain.waterLevel && (cellStack.Peek() == CellType.Grass || cellStack.Peek() == CellType.Dirt)) {
             Vector2Int offset = cellStack.indexWithinChunk;
 
             Vector3 treePos = transform.position + new Vector3(offset.x * HexMetrics.innerRadius * 2 + offset.y % 2 * HexMetrics.innerRadius,
@@ -239,7 +239,7 @@ public class TerrainChunk : MonoBehaviour {
         if(stack) {
             // Only trees can be placed on top of grass
             // So if something else is placed on top of grass, turn the grass into dirt
-            if (cell != CellType.Trees && stack.Peek() == CellType.Grass) {
+            if (stack.Peek() == CellType.Grass) {
                 stack.Pop();
                 stack.Push(CellType.Dirt);
             }
@@ -270,11 +270,21 @@ public class TerrainChunk : MonoBehaviour {
     public void RemoveTerrainObject(HexCoordinates coordinates) {
         //TODO this could be more efficient
         CellStack stack = GetCellStackFromWorldCoords(coordinates);
-        Vector2Int index = stack.indexWithinChunk;
-        TerrainObject obj = terrainObjects[index.x, index.y];
-        if(obj != null) {
-            terrainObjects[index.x, index.y] = null;
-            GameObject.Destroy(obj.gameObject);
+        if (stack) {
+            Vector2Int index = stack.indexWithinChunk;
+            TerrainObject obj = terrainObjects[index.x, index.y];
+            if (obj != null) {
+                terrainObjects[index.x, index.y] = null;
+                GameObject.Destroy(obj.gameObject);
+            }
+        }
+    }
+
+    public void AddTerrainObject(TerrainObjectType type, HexCoordinates coordinates) {
+        //TODO this could be more efficient
+        CellStack stack = GetCellStackFromWorldCoords(coordinates);
+        if(type == TerrainObjectType.Tree) {
+            AddTree(stack);
         }
     }
 

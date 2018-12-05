@@ -6,11 +6,11 @@ using NewtonVR;
 public class TerraformItem : NVRInteractableItemClippable {
 
     public ItemHolder itemHolder;
-    public CellType cellType;
+    public TerrainObjectType objectType = TerrainObjectType.Missing;
+    public CellType cellType = CellType.Missing;
 
     NVRPlayer player;
     CustomNVRHand customHand;
-
 
     public override void BeginInteraction(NVRHand hand) {
         base.BeginInteraction(hand);
@@ -19,12 +19,18 @@ public class TerraformItem : NVRInteractableItemClippable {
 
         customHand = hand.GetComponent<CustomNVRHand>();
         customHand.terraformController.enabled = true;
-        customHand.terraformController.SetCellType(cellType);
+
+        customHand.terraformController.SetObjectType(objectType);
+
+        if (objectType == TerrainObjectType.Cell) {
+            customHand.terraformController.SetCellType(cellType);
+        }
     }
 
     public override void EndInteraction(NVRHand hand) {
         base.EndInteraction(hand);
         itemHolder.ResetItemPosition();
+        customHand.terraformController.SetObjectType(TerrainObjectType.Missing);
         customHand.terraformController.SetCellType(CellType.Missing);
         customHand.terraformController.enabled = false;
     }
